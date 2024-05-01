@@ -1,3 +1,6 @@
+body {
+}
+
 .user-panel {
     text-align: center;
     padding: 20px 0;
@@ -43,6 +46,21 @@
     font-size: 2rem;
 }
 
+.player-number-container .role {
+    background-color: #fff;
+    height: 100%;
+    width: 20%;
+    border: 1px solid #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+}
+
+.role span {
+    font-size: 1.1rem;
+}
+
 .player-fouls-container {
     display: flex;
     justify-content: space-around;
@@ -69,4 +87,80 @@
 .timer {
     font-weight: 900;
     font-size: 6rem;
+}
+
+.admin-panel {
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.admin-panel .middle-panel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.middle-panel h1 {
+    font-weight: 900;
+    font-size: 4rem;
+}
+
+.admin-panel .player-number-container .player-number {
+    margin-left: auto;
+}
+
+.admin-panel .players-container .player {
+    width: 200px;
+    height: 200px;
+}
+
+.admin-panel .control-panel {
+    min-width: 20%;
+    padding: 20px;
+    border: 5px solid #000;
+    min-height: 90vh;
+    max-height: 100%;
+    border-radius: 10px;
+    margin: 0 30px 0 0;
+}
+
+.admin-panel .control-panel button{
+    display: block;
+    width: 70%;
+    margin: 0 auto 30px;
+    padding: 15px;
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.admin-panel .voting-panel {
+    min-width: 20%;
+    padding: 20px;
+    border: 5px solid #000;
+    min-height: 90vh;
+    max-height: 100%;
+    border-radius: 10px;
+    margin: 0 0 0 30px;
+}
+
+.admin-panel .timer-controls-container {
+    display: flex;
+}
+
+.admin-panel .timer-controls-container button {
+    padding: 15px;
+    margin: 0 0 15px 0;
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+.admin-panel .timer-controls-time {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-panel .timer-controls-time {
+    width: 100%;
 }

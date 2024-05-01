@@ -8,6 +8,7 @@ export default function Player(props) {
             </div>
             <div className="player-number-container">
                 <span className="player-number">{props.number}</span>
+                {props.role}
             </div>
             <div className="player-fouls-container">
                 <div className="foul">F</div>
