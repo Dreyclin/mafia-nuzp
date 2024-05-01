@@ -1,0 +1,72 @@
+.user-panel {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.user-panel h1 {
+    font-size: 4rem;
+}
+
+.players-container {
+    margin: 70px 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.kicked {
+    opacity: 0.5;
+}
+
+.players-container .player {
+    width: 250px;
+    height: 250px;
+    background-color: gray;
+    margin: 0 0 20px 0;
+}
+
+.player-icon-container {
+    min-height: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 5rem;
+}
+
+.player-number-container {
+    background-color: antiquewhite;
+    height: 15%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 900;
+    font-size: 2rem;
+}
+
+.player-fouls-container {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    height: 15%;
+}
+
+.player-fouls-container .foul {
+    width: 25%;
+    border: 2px solid red;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    color: blueviolet;
+    font-size: 1.3rem;
+}
+
+.player-fouls-container .foul:not(:last-child) {
+    border-right: none;
+}
+
+.timer {
+    font-weight: 900;
+    font-size: 6rem;
+}
