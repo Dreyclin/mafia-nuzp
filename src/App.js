@@ -1,4 +1,4 @@
-import AdminPanel from "./components/AdminPanel";
+import AdminPanel from "./components/AdminPanel/AdminPanel";
 import UserPanel from "./components/UserPanel";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
