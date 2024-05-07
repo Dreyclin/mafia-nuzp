@@ -1,24 +1,19 @@
 import React from "react";
 import Player from "./Player";
 import Timer from "./Timer";
+import { useSelector } from "react-redux";
 
 export default function UserPanel() {
-    let a = [];
-    function initPlayers() {
-        for (let i = 1; i < 11; i++) {
-            a.push(<Player number={i}/>)
-        }
-        return a;
-    }
+    
+    const players = useSelector((state) => state.gameReducer.players);
 
     return (
         <div className="user-panel">
             <div className="container">
                 <h1>Mafia NUZP</h1>
                 <div className="players-container">
-                    {initPlayers()}
-                    {a.forEach(element => {
-                        return element;
+                    {players.map(player => {
+                        return <Player key={player.number} number={player.number} fouls={player.fouls} chosen={player.chosen}/>
                     })}
                 </div>
                 <Timer />

@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Player(props) {
     return (
-        <div className="player">
+        <div className={props.chosen ? "player chosen" : "player"}>
             <div className="player-icon-container">
                 <i class="fa-solid fa-user"></i>
             </div>
@@ -11,10 +11,9 @@ export default function Player(props) {
                 {props.role}
             </div>
             <div className="player-fouls-container">
-                <div className="foul">F</div>
-                <div className="foul">F</div>
-                <div className="foul">F</div>
-                <div className="foul">F</div>
+                {props.fouls.map(foul => {
+                  return <div className="foul">{foul}</div>  
+                })}
             </div>
         </div>
     )
