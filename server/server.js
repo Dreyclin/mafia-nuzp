@@ -54,8 +54,8 @@ app.post("/setFoul", function (req, res) {
     })
 })
 
-app.post("/setRole", function(req, res) {
-    Player.findOne({number: req.body.data.player.number}).then(player => {
+app.post("/setRole", function (req, res) {
+    Player.findOne({ number: req.body.data.player.number }).then(player => {
         player.role = req.body.data.role;
         player.save().then(() => {
             res.send(player);
@@ -63,17 +63,33 @@ app.post("/setRole", function(req, res) {
     })
 })
 
-app.post("/reset", function(req, res) {
+app.post("/reset", function (req, res) {
     Player.find({}).then(players => {
         players.forEach(player => {
             for (let i = 0; i < player.fouls.length; i++) {
                 player.fouls[i] = null;
             }
             player.role = null;
-            player.chosen = false;
             player.save()
         })
-        res.send(players);
+        res.send(players.sort((a, b) => a.number - b.number));
+    })
+})
+
+app.post("/choose", function (req, res) {
+    console.log(req.body.data);
+
+    Player.findOne({ chosen: true }).then(player => {
+        player.chosen = false;
+        player.save();
+    })
+
+    Player.findOne({ number: req.body.data }).then(player => {
+        const index = req.body.data - 1;
+        player.chosen = true;
+        player.save().then(() => {
+            res.send({ player: player, index: index });
+        })
     })
 })
 

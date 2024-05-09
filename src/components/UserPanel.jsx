@@ -11,9 +11,7 @@ export default function UserPanel() {
     const players = useSelector((state) => state.gameReducer.players);
 
     useEffect(() => {
-        setInterval(() => {
-            dispatch(updatePlayersData());
-        }, 1000);
+        dispatch(updatePlayersData());
     }, [])
 
     return (

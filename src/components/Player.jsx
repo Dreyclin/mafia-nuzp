@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Player(props) {
     return (
-        <div className={props.chosen ? "player chosen" : "player"}>
+        <div onClick={props.onClick} className={props.chosen ? "player chosen" : "player"}>
             <div className="player-icon-container">
                 <i class="fa-solid fa-user"></i>
             </div>
