@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { setFoul, setRole } from "../../features/game/gameSlice";
+import { setFoul, setRole, resetGame } from "../../features/game/gameSlice";
 import { useSelector } from "react-redux";
 
 export default function ControlPanel() {
@@ -21,6 +21,7 @@ export default function ControlPanel() {
         <button className="btn btn-danger">Изгнать</button>
         <button className="btn btn-info">Следующий игрок</button>
         <button className="btn btn-info">Предыдущий игрок</button>
+        <button className="btn btn-danger" onClick={() => dispatch(resetGame())}>Сброс игры</button>
     </div>
     )
 }

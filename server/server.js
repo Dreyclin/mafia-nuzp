@@ -63,6 +63,20 @@ app.post("/setRole", function(req, res) {
     })
 })
 
+app.post("/reset", function(req, res) {
+    Player.find({}).then(players => {
+        players.forEach(player => {
+            for (let i = 0; i < player.fouls.length; i++) {
+                player.fouls[i] = null;
+            }
+            player.role = null;
+            player.chosen = false;
+            player.save()
+        })
+        res.send(players);
+    })
+})
+
 app.listen(5000, function () {
     console.log("App is listening on port 5000")
 })

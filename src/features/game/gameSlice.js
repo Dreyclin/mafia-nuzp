@@ -38,6 +38,18 @@ export const setRole = createAsyncThunk(
     }
 )
 
+export const resetGame = createAsyncThunk(
+    'players/reset',
+    async () => {
+        try {
+            const response = await axios.post("http://localhost:5000/reset")
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
 let players = [
     { number: 1, fouls: [null, null, null, null], role: null, chosen: false },
     { number: 2, fouls: [null, null, null, null], role: null, chosen: false },
@@ -76,6 +88,9 @@ const gameSlice = createSlice({
         .addCase(setRole.fulfilled, (state, action) => {
             const chosenIndex = state.players.findIndex((player) => player.chosen === true);
             state.players[chosenIndex] = action.payload
+        })
+        .addCase(resetGame.fulfilled, (state, action) => {
+            state.players = action.payload
         })
     }
 })
