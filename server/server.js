@@ -93,6 +93,26 @@ app.post("/choose", function (req, res) {
     })
 })
 
+app.post("/switch", function (req, res) {
+    Player.find({}).then(players => {
+        const sortedPlayers = players.sort((a, b) => a.number - b.number)
+        if (req.body.data.dir === "prev" && req.body.data.index != 0) {
+            sortedPlayers[req.body.data.index].chosen = false;
+            sortedPlayers[req.body.data.index - 1].chosen = true;
+            sortedPlayers.forEach(player => {
+                player.save()
+            })
+        } else if (req.body.data.dir === "next" && req.body.data.index != 9) {
+            sortedPlayers[req.body.data.index].chosen = false;
+            sortedPlayers[req.body.data.index + 1].chosen = true;
+            sortedPlayers.forEach(player => {
+                player.save()
+            })
+        }
+        res.send(sortedPlayers);
+    })
+})
+
 app.listen(5000, function () {
     console.log("App is listening on port 5000")
 })

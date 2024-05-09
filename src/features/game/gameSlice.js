@@ -124,7 +124,7 @@ const gameSlice = createSlice({
                 state.players[index] = player;
             })
             .addCase(switchPlayers.fulfilled, (state, action) => {
-                state.players = action.payload;
+                state.players = action.payload
             })
     }
 })
