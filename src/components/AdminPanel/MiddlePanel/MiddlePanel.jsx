@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Player from "../../Player";
 import Role from "../../Role";
 import Timer from "../../Timer";
 import TimerControls from "./TimerControls";
 import { useSelector } from "react-redux";
-import axios from "axios";
 
 export default function MiddlePanel(props) {
 

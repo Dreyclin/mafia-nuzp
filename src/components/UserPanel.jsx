@@ -2,16 +2,18 @@ import React from "react";
 import Player from "./Player";
 import Timer from "./Timer";
 import { useSelector } from "react-redux";
-import axios from "axios";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { updatePlayersData } from "../features/game/gameSlice";
 
 export default function UserPanel() {
-
+    const dispatch = useDispatch();
     const players = useSelector((state) => state.gameReducer.players);
 
     useEffect(() => {
-        axios.post("http://localhost:5000/load", {players: players}).then((response) => {
-        })
+        setInterval(() => {
+            dispatch(updatePlayersData());
+        }, 10000);
     }, [])
 
     return (

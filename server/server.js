@@ -37,6 +37,8 @@ app.post("/load", function (req, res) {
                     console.log("Successfully saved!");
                 })
             });
+        } else {
+            res.send(players.sort((a, b) => a.number - b.number));
         }
     })
 
