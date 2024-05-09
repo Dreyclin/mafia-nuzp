@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Player from "../../Player";
 import Role from "../../Role";
 import Timer from "../../Timer";
 import TimerControls from "./TimerControls";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { updatePlayersData } from "../../../features/game/gameSlice";
 
 export default function MiddlePanel(props) {
 
+    const dispatch = useDispatch();
+
     const players = useSelector((state) => state.gameReducer.players);
     let chosenPlayer = players.findIndex(player => player.chosen === true);
-
+    
+    useEffect(() => {
+        setInterval(() => {
+            dispatch(updatePlayersData());
+        }, 1000);
+    }, [])
+    
     return (
         <div className="middle-panel">
             <div className="chosen-player-container">

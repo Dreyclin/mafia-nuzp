@@ -6,10 +6,34 @@ export const updatePlayersData = createAsyncThunk(
     'players/updateData',
     async () => {
         try {
-            const response = await axios.post("http://localhost:5000/load")
+            const response = await axios.post("http://localhost:5000/load", {players})
             return response.data
         } catch (error) {
             console.log(error);
+        }
+    }
+)
+
+export const setFoul = createAsyncThunk(
+    'players/setFoul',
+    async (data) => {
+        try {
+            const response = await axios.post("http://localhost:5000/setFoul", {data})
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
+export const setRole = createAsyncThunk(
+    'players/setRole',
+    async (data) => {
+        try {
+            const response = await axios.post("http://localhost:5000/setRole", {data})
+            return response.data
+        } catch (error) {
+            console.log(error)
         }
     }
 )
@@ -39,27 +63,23 @@ const gameSlice = createSlice({
     name: "game",
     initialState,
     reducers: {
-        setRole(state, action) {
-            let { role } = action.payload
-            let chosenIndex = state.players.findIndex(player => player.chosen === true);
-            state.players[chosenIndex].role = role;
-        },
-
-        setFoul(state, action) {
-            let chosenIndex = state.players.findIndex(player => player.chosen === true);
-
-            let foulIndex = state.players[chosenIndex].fouls.findIndex(foul => foul === null);
-
-            state.players[chosenIndex].fouls[foulIndex] = "F";
-        },
     },
     extraReducers: (builder) => {
-        builder.addCase(updatePlayersData.fulfilled, (state, action) => {
+        builder
+        .addCase(updatePlayersData.fulfilled, (state, action) => {
             state.players = action.payload
+        })
+        .addCase(setFoul.fulfilled, (state, action) => {
+            const chosenIndex = state.players.findIndex((player) => player.chosen === true);
+            state.players[chosenIndex] = action.payload
+        })
+        .addCase(setRole.fulfilled, (state, action) => {
+            const chosenIndex = state.players.findIndex((player) => player.chosen === true);
+            state.players[chosenIndex] = action.payload
         })
     }
 })
 
-export const { setFoul, setRole } = gameSlice.actions
+// export const { setFoul, setRole } = gameSlice.actions
 
 export default gameSlice.reducer

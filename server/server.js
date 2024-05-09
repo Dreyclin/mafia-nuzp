@@ -24,17 +24,17 @@ const Player = mongoose.model("Player", playerSchema);
 
 app.post("/load", function (req, res) {
     Player.find({}).then((players) => {
-        if (!players) {
-            req.body.players.forEach(player => {
+        if (!players.length) {
+            const sortedPlayers = req.body.players.sort((a, b) => a.number - b.number)
+            sortedPlayers.forEach(player => {
                 const newPlayer = new Player({
                     number: player.number,
                     fouls: player.fouls,
                     role: player.role,
                     chosen: player.chosen
                 })
-
+                console.log(newPlayer);
                 newPlayer.save().then(() => {
-                    console.log("Successfully saved!");
                 })
             });
         } else {
@@ -42,6 +42,25 @@ app.post("/load", function (req, res) {
         }
     })
 
+})
+
+app.post("/setFoul", function (req, res) {
+    Player.findOne({ number: req.body.data.number }).then(player => {
+        const index = player.fouls.findIndex((foul) => foul === null);
+        player.fouls[index] = "F";
+        player.save().then(() => {
+            res.send(player);
+        });
+    })
+})
+
+app.post("/setRole", function(req, res) {
+    Player.findOne({number: req.body.data.player.number}).then(player => {
+        player.role = req.body.data.role;
+        player.save().then(() => {
+            res.send(player);
+        })
+    })
 })
 
 app.listen(5000, function () {

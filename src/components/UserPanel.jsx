@@ -13,7 +13,7 @@ export default function UserPanel() {
     useEffect(() => {
         setInterval(() => {
             dispatch(updatePlayersData());
-        }, 10000);
+        }, 1000);
     }, [])
 
     return (
