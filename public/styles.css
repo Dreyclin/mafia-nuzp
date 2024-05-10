@@ -165,6 +165,31 @@ body {
     width: 100%;
 }
 
+.admin-panel .voting-panel {
+    text-align: center;
+}
+
+.admin-panel .voting-panel h2 {
+    margin: 0 0 25px 0;
+}
+
+.admin-panel .candidates-container,
+.admin-panel .votes-container {
+    display: flex;
+}
+
+.admin-panel .candidates-container .candidate,
+.admin-palen .votes-container, .vote {
+    border: 2px solid black;
+    padding: 17px;
+    max-width: 10%;
+}
+
+.admin-panel .candidates-container .candidate:not(:last-child),
+.admin-panel .votes-container .vote:not(:last-child){
+    border-right: none;
+}
+
 .chosen {
     border: 2px solid blue;
 }
