@@ -30,7 +30,7 @@ export default function MiddlePanel(props) {
             </div>
             <div className="players-container">
                 {players.map(player => {
-                    return <Player onClick={() => handleChooseClick(player.number)} key={player.number} number={player.number} role={<Role role={player.role} />} fouls={player.fouls} chosen={player.chosen} />
+                    return <Player onClick={() => handleChooseClick(player.number)} key={player.number} number={player.number} role={<Role role={player.role} />} fouls={player.fouls} chosen={player.chosen} status={player.status}/>
                 })}
             </div>
             <div className="timer-container">

@@ -74,17 +74,29 @@ export const switchPlayers = createAsyncThunk(
     }
 )
 
+export const kickPlayer = createAsyncThunk(
+    'player/kick',
+    async (data) => {
+        try {
+            const response = await axios.post("http://localhost:5000/kick", {data})
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
 let players = [
-    { number: 1, fouls: [null, null, null, null], role: null, chosen: true },
-    { number: 2, fouls: [null, null, null, null], role: null, chosen: false },
-    { number: 3, fouls: [null, null, null, null], role: null, chosen: false },
-    { number: 4, fouls: [null, null, null, null], role: null, chosen: false },
-    { number: 5, fouls: [null, null, null, null], role: null, chosen: false },
-    { number: 6, fouls: [null, null, null, null], role: null, chosen: false },
-    { number: 7, fouls: [null, null, null, null], role: null, chosen: false },
-    { number: 8, fouls: [null, null, null, null], role: null, chosen: false },
-    { number: 9, fouls: [null, null, null, null], role: null, chosen: false },
-    { number: 10, fouls: [null, null, null, null], role: null, chosen: false }]
+    { number: 1, fouls: [null, null, null, null], role: null, chosen: true, status: "in-game" },
+    { number: 2, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
+    { number: 3, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
+    { number: 4, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
+    { number: 5, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
+    { number: 6, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
+    { number: 7, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
+    { number: 8, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
+    { number: 9, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
+    { number: 10, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" }]
 
 let admin = {
 
@@ -126,9 +138,11 @@ const gameSlice = createSlice({
             .addCase(switchPlayers.fulfilled, (state, action) => {
                 state.players = action.payload
             })
+            .addCase(kickPlayer.fulfilled, (state, action) => {
+                const chosenIndex = state.players.findIndex((player) => player.chosen === true);
+                state.players[chosenIndex] = action.payload
+            })
     }
 })
-
-// export const { setFoul, setRole } = gameSlice.actions
 
 export default gameSlice.reducer

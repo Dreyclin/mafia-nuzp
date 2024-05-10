@@ -15,7 +15,8 @@ const playerSchema = mongoose.Schema({
     number: Number,
     fouls: [String],
     role: String,
-    chosen: Boolean
+    chosen: Boolean,
+    status: String
 })
 
 const Player = mongoose.model("Player", playerSchema);
@@ -31,7 +32,8 @@ app.post("/load", function (req, res) {
                     number: player.number,
                     fouls: player.fouls,
                     role: player.role,
-                    chosen: player.chosen
+                    chosen: player.chosen,
+                    status: player.status
                 })
                 console.log(newPlayer);
                 newPlayer.save().then(() => {
@@ -46,20 +48,30 @@ app.post("/load", function (req, res) {
 
 app.post("/setFoul", function (req, res) {
     Player.findOne({ number: req.body.data.number }).then(player => {
-        const index = player.fouls.findIndex((foul) => foul === null);
-        player.fouls[index] = "F";
-        player.save().then(() => {
+        if (player.status !== "kicked") {
+            const index = player.fouls.findIndex((foul) => foul === null);
+            player.fouls[index] = "F";
+            player.save().then(() => {
+                res.send(player);
+            });
+        } else {
             res.send(player);
-        });
+        }
+
     })
 })
 
 app.post("/setRole", function (req, res) {
     Player.findOne({ number: req.body.data.player.number }).then(player => {
-        player.role = req.body.data.role;
-        player.save().then(() => {
+        if (player.status !== "kicked") {
+            player.role = req.body.data.role;
+            player.save().then(() => {
+                res.send(player);
+            })
+        } else {
             res.send(player);
-        })
+        }
+
     })
 })
 
@@ -70,6 +82,7 @@ app.post("/reset", function (req, res) {
                 player.fouls[i] = null;
             }
             player.role = null;
+            player.status = "in-game";
             player.save()
         })
         res.send(players.sort((a, b) => a.number - b.number));
@@ -77,7 +90,6 @@ app.post("/reset", function (req, res) {
 })
 
 app.post("/choose", function (req, res) {
-    console.log(req.body.data);
 
     Player.findOne({ chosen: true }).then(player => {
         player.chosen = false;
@@ -110,6 +122,15 @@ app.post("/switch", function (req, res) {
             })
         }
         res.send(sortedPlayers);
+    })
+})
+
+app.post("/kick", function (req, res) {
+    Player.findOne({ chosen: true }).then(player => {
+        player.status = "kicked";
+        player.save().then(() => {
+            res.send(player);
+        })
     })
 })
 

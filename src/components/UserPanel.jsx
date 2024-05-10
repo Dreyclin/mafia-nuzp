@@ -22,7 +22,7 @@ export default function UserPanel() {
                 <h1>Mafia NUZP</h1>
                 <div className="players-container">
                     {players.map(player => {
-                        return <Player key={player.number} number={player.number} fouls={player.fouls} chosen={player.chosen} />
+                        return <Player key={player.number} number={player.number} fouls={player.fouls} chosen={player.chosen} status={player.status}/>
                     })}
                 </div>
                 <Timer />

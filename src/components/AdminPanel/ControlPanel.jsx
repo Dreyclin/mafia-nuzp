@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { setFoul, setRole, resetGame, switchPlayers } from "../../features/game/gameSlice";
+import { setFoul, setRole, resetGame, switchPlayers, kickPlayer } from "../../features/game/gameSlice";
 import { useSelector } from "react-redux";
 
 export default function ControlPanel() {
@@ -23,7 +23,7 @@ export default function ControlPanel() {
         <button className="btn btn-danger" onClick={() => dispatch(setRole({player: players[chosenIndex], role: "К"}))}>Сделать мирным</button>
         <button className="btn btn-light" onClick={() => dispatch(setFoul(players[chosenIndex]))}>Поставить фол</button>
         <button className="btn btn-primary">Выставить на голосование</button>
-        <button className="btn btn-danger">Изгнать</button>
+        <button className="btn btn-danger" onClick={() => dispatch(kickPlayer())}>Изгнать</button>
         <button className="btn btn-info" onClick={() => handleSwitchClick("next")}>Следующий игрок</button>
         <button className="btn btn-info" onClick={() => handleSwitchClick("prev")}>Предыдущий игрок</button>
         <button className="btn btn-danger" onClick={() => dispatch(resetGame())}>Сброс игры</button>
