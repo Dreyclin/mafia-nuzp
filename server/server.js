@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-mongoose.connect('mongodb://127.0.0.1:27017/mafiaDB');
+mongoose.connect('mongodb+srv://admin:freetimenuzpcheesecode@mafiacluster.fvgwqjh.mongodb.net/mafiaDB');
 
 const playerSchema = mongoose.Schema({
     number: Number,
