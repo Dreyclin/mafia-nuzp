@@ -153,27 +153,44 @@ app.post("/loadTimer", function (req, res) {
                 res.send(newTimer);
             })
         } else {
-            // console.log(timer);
             res.send(timer);
         }
     })
 })
 
-app.post("/increase", function (req, res) {
+app.post("/controlAmountTime", function (req, res) {
     Timer.findOne({}).then((timer) => {
-        console.log(timer);
-        timer.seconds += 5;
-        if (timer.seconds > 60) {
-            timer.seconds = 60 - timer.seconds;
-            timer.minutes += 1;
-            timer.save().then(() => {
-                res.send(timer);
-            })
+        if (req.body.data === "inc") {
+            timer.seconds += 5;
+            if (timer.seconds >= 60) {
+                timer.seconds = 0 + (60 - timer.seconds);
+                timer.minutes += 1;
+                timer.save().then(() => {
+                    res.send(timer);
+                })
 
-        } else {
-            timer.save().then(() => {
-                res.send(timer);
-            })
+            } else {
+                timer.save().then(() => {
+                    res.send(timer);
+                })
+            }
+        } else if (req.body.data === "dec") {
+            timer.seconds -= 5;
+            if (timer.seconds < 0) {
+                if (timer.minutes === 0) {
+                    res.send(timer);
+                } else {
+                    timer.minutes -= 1;
+                    timer.seconds = 0 + (60 + timer.seconds);
+                    timer.save().then(() => {
+                        res.send(timer);
+                    })
+                }
+            } else {
+                timer.save().then(() => {
+                    res.send(timer);
+                })
+            }
         }
     })
 })

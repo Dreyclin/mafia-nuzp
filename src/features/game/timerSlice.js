@@ -20,6 +20,18 @@ export const loadTimer = createAsyncThunk(
     }
 )
 
+export const controlAmountTime = createAsyncThunk(
+    'timer/controlAmount',
+    async (data, {dispatch}) => {
+        try {
+            const response = await axios.post("http://localhost:5000/controlAmountTime", {data})
+            dispatch(loadTimer())
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
 
 const timerSlice = createSlice({
     name: "timer",
