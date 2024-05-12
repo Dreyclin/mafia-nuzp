@@ -5,8 +5,6 @@ import { loadTimer, increaseTime } from "../features/game/timerSlice";
 import { useSelector } from "react-redux";
 
 export default function Timer() {
-    
-    // const [time, setTime] = useState({ minutes: 1, seconds: 0 });
     const dispatch = useDispatch();
     const {minutes, seconds} = useSelector((state) => state.timerReducer.time)
 

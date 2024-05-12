@@ -7,20 +7,18 @@ import { useEffect } from "react";
 import { updatePlayersData } from "../features/game/gameSlice";
 import { loadTimer } from "../features/game/timerSlice";
 
-
 export default function UserPanel() {
     const dispatch = useDispatch();
     const players = useSelector((state) => state.gameReducer.players);
-    const timer = useSelector((state) => state.timerReducer.time);
+    const {minutes, seconds} = useSelector((state) => state.timerReducer.time)
 
     useEffect(() => {
-        dispatch(updatePlayersData());
-    }, [players])
+        setInterval(() => {
+            dispatch(updatePlayersData());
+            dispatch(loadTimer({minutes: minutes, seconds: seconds}));
+        }, 500);
 
-    useEffect(() => {
-        dispatch(loadTimer());
-        console.log("Timer")
-    }, [timer])
+    }, [dispatch]);
 
     return (
         <div className="user-panel">
