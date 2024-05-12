@@ -19,6 +19,13 @@ const playerSchema = mongoose.Schema({
     status: String
 })
 
+const timerSchema = mongoose.Schema({
+    minutes: Number,
+    seconds: Number
+})
+
+
+const Timer = mongoose.model("Timer", timerSchema);
 const Player = mongoose.model("Player", playerSchema);
 
 
@@ -131,6 +138,43 @@ app.post("/kick", function (req, res) {
         player.save().then(() => {
             res.send(player);
         })
+    })
+})
+
+app.post("/loadTimer", function (req, res) {
+    Timer.findOne({}).then((timer) => {
+        if (!timer) {
+            const newTimer = new Timer({
+                minutes: req.body.data.minutes,
+                seconds: req.body.data.seconds
+            })
+
+            newTimer.save().then(() => {
+                res.send(newTimer);
+            })
+        } else {
+            // console.log(timer);
+            res.send(timer);
+        }
+    })
+})
+
+app.post("/increase", function (req, res) {
+    Timer.findOne({}).then((timer) => {
+        console.log(timer);
+        timer.seconds += 5;
+        if (timer.seconds > 60) {
+            timer.seconds = 60 - timer.seconds;
+            timer.minutes += 1;
+            timer.save().then(() => {
+                res.send(timer);
+            })
+
+        } else {
+            timer.save().then(() => {
+                res.send(timer);
+            })
+        }
     })
 })
 
