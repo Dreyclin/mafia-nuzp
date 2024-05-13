@@ -6,7 +6,7 @@ const initialState = {
         minutes: 1,
         seconds: 0
     },
-    isRunning: false
+    isRunning: true
 }
 export const loadTimer = createAsyncThunk(
     'timer/load',
@@ -18,6 +18,19 @@ export const loadTimer = createAsyncThunk(
             console.log(error)
         }
 
+    }
+)
+
+export const saveTimerValue = createAsyncThunk(
+    'timer/saveValue',
+    async (data, { dispatch }) => {
+        try {
+            const response = await axios.post("http://localhost:5000/saveTimerValue", { data })
+            dispatch(tick())
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
     }
 )
 
@@ -40,11 +53,11 @@ const timerSlice = createSlice({
     reducers: {
         tick: state => {
             if (state.seconds > 0) {
-                state.seconds--;
+                state.time.seconds--;
             } else {
-                state.seconds = 59;
-                if (state.minutes > 0) {
-                    state.minutes--;
+                state.time.seconds = 59;
+                if (state.time.minutes > 0) {
+                    state.time.minutes--;
                 } else {
                     state.isRunning = false;
                 }
@@ -70,9 +83,13 @@ const timerSlice = createSlice({
                 minutes = newMin;
                 seconds = newSec;
             })
+
+            .addCase(saveTimerValue.fulfilled, (state, action) => {
+                state.time = action.payload
+            })
     }
 })
 
-export const {startTimer, stopTimer, tick} = timerSlice.actions
+export const { startTimer, stopTimer, tick } = timerSlice.actions
 
 export default timerSlice.reducer
