@@ -11,11 +11,11 @@ export default function UserPanel() {
     const dispatch = useDispatch();
     const players = useSelector((state) => state.gameReducer.players);
     const {minutes, seconds} = useSelector((state) => state.timerReducer.time)
+    const {isRunning} = useSelector((state) => state.timerReducer.isRunning)
 
     useEffect(() => {
         setInterval(() => {
             dispatch(updatePlayersData());
-            dispatch(loadTimer({minutes: minutes, seconds: seconds}));
         }, 500);
 
     }, [dispatch]);
@@ -29,7 +29,6 @@ export default function UserPanel() {
                         return <Player key={player.number} number={player.number} fouls={player.fouls} chosen={player.chosen} status={player.status} />
                     })}
                 </div>
-                <Timer />
             </div>
         </div>
     )

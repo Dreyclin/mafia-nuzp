@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { controlAmountTime } from "../../../features/game/timerSlice";
-import { startTimer, stopTimer } from "../../../features/game/timerSlice";
+import { timerControls } from "../../../features/game/timerSlice";
 
 export default function TimerControls() {
     
@@ -16,8 +16,8 @@ export default function TimerControls() {
                 <button className="btn btn-warning" onClick={() => dispatch(controlAmountTime("dec", dispatch))}>-5 sec</button>
             </div>
             <div className="timer-controls-time">
-                <button className="btn btn-success" onClick={() => dispatch(startTimer())}>Start</button>
-                <button className="btn btn-danger" onClick={() => dispatch(stopTimer())}>Stop</button>
+                <button className="btn btn-success" onClick={() => dispatch(timerControls("start"))}>Start</button>
+                <button className="btn btn-danger" onClick={() => dispatch(timerControls("stop"))}>Stop</button>
             </div>
         </div>
     )

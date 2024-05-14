@@ -1,29 +1,29 @@
 import React from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { loadTimer} from "../features/game/timerSlice";
+import { loadTimer, saveTimerValue} from "../features/game/timerSlice";
 import { useSelector } from "react-redux";
-import { tick } from "../features/game/timerSlice";
 
 
 export default function Timer() {
     const dispatch = useDispatch();
     const {minutes, seconds} = useSelector((state) => state.timerReducer.time)
-    const {isRunning} = useSelector((state) => state.timerReducer.isRunning)
+    const {isRunning} = useSelector((state) => state.timerReducer)
 
     useEffect(() => {
-        dispatch(loadTimer({minutes: minutes, seconds: seconds}));
+        dispatch(loadTimer({minutes: minutes, seconds: seconds, isRunning: isRunning}));
     }, []);
 
     useEffect(() => {
       let intervalId;
-  
-      if (isRunning) {
+      if(isRunning){
         intervalId = setInterval(() => {
-          dispatch(tick());
+          dispatch(saveTimerValue({minutes: minutes, seconds: seconds}))
         }, 1000);
+      } else {
+        clearInterval(intervalId);
       }
-  
+
       return () => clearInterval(intervalId);
     }, [isRunning, dispatch]);
     

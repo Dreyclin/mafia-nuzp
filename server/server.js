@@ -21,7 +21,8 @@ const playerSchema = mongoose.Schema({
 
 const timerSchema = mongoose.Schema({
     minutes: Number,
-    seconds: Number
+    seconds: Number,
+    isRunning: Boolean
 })
 
 
@@ -146,7 +147,8 @@ app.post("/loadTimer", function (req, res) {
         if (!timer) {
             const newTimer = new Timer({
                 minutes: req.body.data.minutes,
-                seconds: req.body.data.seconds
+                seconds: req.body.data.seconds,
+                isRunning: req.body.data.isRunning
             })
 
             newTimer.save().then(() => {
@@ -192,6 +194,37 @@ app.post("/controlAmountTime", function (req, res) {
                 })
             }
         }
+    })
+})
+
+app.post("/saveTimerValue", function(req, res) {
+    Timer.findOne({}).then((timer) => {
+        if (timer.seconds > 0) {
+            timer.seconds--;
+        } else {
+            timer.seconds = 59;
+            if (timer.minutes > 0) {
+                timer.minutes--;
+            } else {
+                timer.isRunning = false;
+            }
+        }
+        timer.save().then(() => {
+            res.send(timer);
+        })
+    })
+})
+
+app.post("/controls", function(req, res) {
+    Timer.findOne({}).then((timer) => {
+        if(req.body.data === "start"){
+            timer.isRunning = true;
+        } else if(req.body.data === "stop"){
+            timer.isRunning = false;
+        }
+        timer.save().then(() => {
+            res.send(timer.isRunning);
+        })
     })
 })
 
