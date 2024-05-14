@@ -86,6 +86,18 @@ export const kickPlayer = createAsyncThunk(
     }
 )
 
+export const loadCandidates = createAsyncThunk(
+    'vote/loadCandidates',
+    async(data) => {
+        try {
+            const response = await axios.post('http://localhost:5000/loadCandidates')
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
 export const setOnVoting = createAsyncThunk(
     'vote/setOnVoting',
     async(data) => {
@@ -99,29 +111,28 @@ export const setOnVoting = createAsyncThunk(
 )
 
 let players = [
-    { number: 1, fouls: [null, null, null, null], role: null, chosen: true, status: "in-game" },
-    { number: 2, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
-    { number: 3, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
-    { number: 4, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
-    { number: 5, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
-    { number: 6, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
-    { number: 7, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
-    { number: 8, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
-    { number: 9, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
-    { number: 10, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" }]
+    { number: 1, fouls: [null, null, null, null], role: null, chosen: true, status: "in-game", onVoting: false },
+    { number: 2, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
+    { number: 3, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
+    { number: 4, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
+    { number: 5, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
+    { number: 6, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
+    { number: 7, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
+    { number: 8, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
+    { number: 9, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
+    { number: 10, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false }]
 
 let admin = {
 
 }
 
 let candidates = [
-    {number: null, votes: null}
 ]
 
 const initialState = {
     players: players,
     adminPanel: admin,
-    canidates: candidates
+    candidates: candidates
 }
 
 const gameSlice = createSlice({
@@ -158,6 +169,12 @@ const gameSlice = createSlice({
             .addCase(kickPlayer.fulfilled, (state, action) => {
                 const chosenIndex = state.players.findIndex((player) => player.chosen === true);
                 state.players[chosenIndex] = action.payload
+            })
+            .addCase(setOnVoting.fulfilled, (state, action) => {
+                state.candidates = action.payload;
+            })
+            .addCase(loadCandidates.fulfilled, (state, action) => {
+                state.candidates = action.payload;
             })
     }
 })

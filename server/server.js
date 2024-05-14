@@ -16,7 +16,8 @@ const playerSchema = mongoose.Schema({
     fouls: [String],
     role: String,
     chosen: Boolean,
-    status: String
+    status: String,
+    onVoting: Boolean
 })
 
 const timerSchema = mongoose.Schema({
@@ -46,7 +47,8 @@ app.post("/load", function (req, res) {
                     fouls: player.fouls,
                     role: player.role,
                     chosen: player.chosen,
-                    status: player.status
+                    status: player.status,
+                    onVoting: player.onVoting
                 })
                 console.log(newPlayer);
                 newPlayer.save().then(() => {
@@ -202,7 +204,7 @@ app.post("/controlAmountTime", function (req, res) {
     })
 })
 
-app.post("/saveTimerValue", function(req, res) {
+app.post("/saveTimerValue", function (req, res) {
     Timer.findOne({}).then((timer) => {
         if (timer.seconds > 0) {
             timer.seconds--;
@@ -220,11 +222,11 @@ app.post("/saveTimerValue", function(req, res) {
     })
 })
 
-app.post("/controls", function(req, res) {
+app.post("/controls", function (req, res) {
     Timer.findOne({}).then((timer) => {
-        if(req.body.data === "start"){
+        if (req.body.data === "start") {
             timer.isRunning = true;
-        } else if(req.body.data === "stop"){
+        } else if (req.body.data === "stop") {
             timer.isRunning = false;
         }
         timer.save().then(() => {
@@ -233,8 +235,37 @@ app.post("/controls", function(req, res) {
     })
 })
 
-app.post("/setOnVoting", function(req, res) {
+app.post("/loadCandidates", function (req, res) {
+    Candidate.find({}).then(candidates => {
+        res.send(candidates);
+    })
+})
 
+app.post("/setOnVoting", function (req, res) {
+    let candidateNumber;
+
+    Player.findOne({ chosen: true }).then(player => {
+        if (player.onVoting) {
+            return null
+        } else {
+            player.onVoting = true;
+            player.save().then(() => {
+                candidateNumber = player.number;
+                Candidate.find({}).then(candidates => {
+                    const newCandidate = new Candidate({
+                        number: candidateNumber,
+                        votes: null
+                    })
+
+                    newCandidate.save().then(() => {
+                        res.send(candidates);
+                    })
+                })
+            })
+
+        }
+
+    })
 })
 
 app.listen(5000, function () {
