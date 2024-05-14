@@ -86,6 +86,18 @@ export const kickPlayer = createAsyncThunk(
     }
 )
 
+export const setOnVoting = createAsyncThunk(
+    'vote/setOnVoting',
+    async(data) => {
+        try {
+            const response = await axios.post("http://localhost:5000/setOnVoting", {data})
+            return response.data;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
 let players = [
     { number: 1, fouls: [null, null, null, null], role: null, chosen: true, status: "in-game" },
     { number: 2, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game" },
@@ -102,9 +114,14 @@ let admin = {
 
 }
 
+let candidates = [
+    {number: null, votes: null}
+]
+
 const initialState = {
     players: players,
-    adminPanel: admin
+    adminPanel: admin,
+    canidates: candidates
 }
 
 const gameSlice = createSlice({

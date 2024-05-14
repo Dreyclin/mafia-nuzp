@@ -25,7 +25,12 @@ const timerSchema = mongoose.Schema({
     isRunning: Boolean
 })
 
+const candidateSchema = mongoose.Schema({
+    number: Number,
+    votes: Number
+})
 
+const Candidate = mongoose.model("Candidate", candidateSchema);
 const Timer = mongoose.model("Timer", timerSchema);
 const Player = mongoose.model("Player", playerSchema);
 
@@ -226,6 +231,10 @@ app.post("/controls", function(req, res) {
             res.send(timer.isRunning);
         })
     })
+})
+
+app.post("/setOnVoting", function(req, res) {
+
 })
 
 app.listen(5000, function () {

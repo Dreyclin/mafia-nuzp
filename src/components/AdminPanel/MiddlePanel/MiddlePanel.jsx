@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { updatePlayersData } from "../../../features/game/gameSlice";
 import { choosePlayer } from "../../../features/game/gameSlice";
-import { loadTimer } from "../../../features/game/timerSlice";
 
 export default function MiddlePanel(props) {
 
