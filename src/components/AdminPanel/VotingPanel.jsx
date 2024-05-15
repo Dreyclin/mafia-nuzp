@@ -10,7 +10,7 @@ export default function VotingPanel() {
 
     useEffect(() => {
         dispatch(loadCandidates())
-    }, [])
+    }, [dispatch])
 
     return (
         <div className="voting-panel">
@@ -18,14 +18,14 @@ export default function VotingPanel() {
             <h3>Кандидаты:</h3>
             <div className="candidates-container">
                 {candidates.map(candidate => {
-                        <div className="candidate">
+                        return <div className="candidate">
                             {candidate.number}
                         </div>
                 })}
             </div>
             <h3>Голоса:</h3>
             <div className="votes-container">
-                {candidates.map(candidate => <div className="vote">{candidate.votes}</div>)}
+                {candidates.map(candidate => {return <div className="vote">{candidate.votes}</div>})}
             </div>
         </div>
     )

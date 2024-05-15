@@ -4,28 +4,30 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { loadGame, updatePlayersData } from "../features/game/gameSlice";
-import { loadTimer } from "../features/game/timerSlice";
 import WinnersComponent from "./WinnersComponent";
 
 export default function UserPanel() {
     const dispatch = useDispatch();
     const players = useSelector((state) => state.gameReducer.players);
-
     const gameOver = useSelector(state => state.gameReducer.gameOver)
-    const winningTeam = useSelector(state => state.gameReducer.winningTeam);
-    const {minutes, seconds} = useSelector((state) => state.timerReducer.time)
-    const {isRunning} = useSelector((state) => state.timerReducer.isRunning)
-    console.log(players);
-    const display = "block";
+    const winningTeam = useSelector(state => state.gameReducer.winnerTeam);
 
+    let display;
 
+    if(gameOver){
+        display = "block";
+    } else {
+        display = "none";
+    }
+    
     useEffect(() => {
-        dispatch(loadGame());
-    }, [])
+     
+    }, [dispatch])
 
     useEffect(() => {
         setInterval(() => {
             dispatch(updatePlayersData());
+            dispatch(loadGame());
         }, 500);
 
     }, [dispatch]);
@@ -40,7 +42,7 @@ export default function UserPanel() {
                     })}
                 </div>
             </div>
-            <WinnersComponent winningTeam={winningTeam} gameOver={gameOver} display={display}/>
+            <WinnersComponent players={players} winningTeam={winningTeam} gameOver={gameOver} display={display}/>
         </div>
     )
 }

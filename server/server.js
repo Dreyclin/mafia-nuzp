@@ -13,7 +13,8 @@ mongoose.connect('mongodb+srv://admin:freetimenuzpcheesecode@mafiacluster.fvgwqj
 
 const gameSchema = mongoose.Schema({
     winnerTeam: String,
-    gameOver: Boolean
+    gameOver: Boolean,
+    roles: [Object]
 })
 
 const playerSchema = mongoose.Schema({
@@ -55,7 +56,6 @@ app.post("/load", function (req, res) {
                     status: player.status,
                     onVoting: player.onVoting
                 })
-                console.log(newPlayer);
                 newPlayer.save().then(() => {
                 })
             });
@@ -169,7 +169,6 @@ app.post("/reset", function (req, res) {
 })
 
 app.post("/choose", function (req, res) {
-    console.log(req.body.data);
     Player.findOne({ chosen: true }).then(player => {
         if (!player) {
             Player.findOne({ number: 1 }).then((player) => {
@@ -179,7 +178,6 @@ app.post("/choose", function (req, res) {
                 })
             })
         } else {
-            console.log(player);
             player.chosen = false;
             player.save().then(() => {
                 Player.findOne({ number: req.body.data }).then(player => {
@@ -355,7 +353,6 @@ app.post("/checkOver", function(req, res) {
             }
         })
         Game.findOne({}).then(game => {
-            console.log(game, blackTeamAmount, redTeamAmount);
             if(blackTeamAmount === redTeamAmount) {
                     game.winnerTeam = "Черные";
                     game.gameOver = true;
@@ -377,13 +374,12 @@ app.post("/checkOver", function(req, res) {
 })
 
 app.post("/loadGame", function(req, res) {
-    Game.find({}).then(game => {
-        if(!game.length) {
+    Game.findOne({}).then(game => {
+        if(!game) {
             const newGame = new Game({
                 winnerTeam: null,
-                gameOver: false
+                gameOver: false,
             })
-
             newGame.save().then(() => {
                 res.send(newGame);
             })

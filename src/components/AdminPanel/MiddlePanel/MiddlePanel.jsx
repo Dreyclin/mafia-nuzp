@@ -12,14 +12,13 @@ import { loadGame } from "../../../features/game/gameSlice";
 export default function MiddlePanel(props) {
 
     const dispatch = useDispatch();
-
     const players = useSelector((state) => state.gameReducer.players);
     let chosenPlayer = players.findIndex(player => player.chosen === true);
 
     useEffect(() => {
         dispatch(updatePlayersData());
         dispatch(loadGame());
-    }, [])
+    }, [dispatch])
 
     function handleChooseClick(number) {
         dispatch(choosePlayer(number))

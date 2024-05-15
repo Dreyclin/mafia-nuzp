@@ -130,7 +130,6 @@ export const loadGame = createAsyncThunk(
     async (data) => {
         try {
             const response = await axios.post('http://localhost:5000/loadGame', { data });
-            console.log(response);
             return response.data;
         } catch (error) {
             console.log(error)
@@ -157,7 +156,7 @@ const initialState = {
     players: players,
     candidates: candidates,
     gameOver: false,
-    winnerTeam: null
+    winnerTeam: null,
 }
 
 const gameSlice = createSlice({
@@ -202,13 +201,13 @@ const gameSlice = createSlice({
                 state.candidates = action.payload;
             })
             .addCase(loadGame.fulfilled, (state, action) => {
-                const {winnerTeam, gameOver} = action.payload;
+                const {gameOver, winnerTeam} = action.payload;
 
                 state.winnerTeam = winnerTeam;
                 state.gameOver = gameOver;
             })
             .addCase(checkGameOver.fulfilled, (state, action) => {
-                const {winnerTeam, gameOver} = action.payload;
+                const {gameOver, winnerTeam} = action.payload;
 
                 state.winnerTeam = winnerTeam;
                 state.gameOver = gameOver;
