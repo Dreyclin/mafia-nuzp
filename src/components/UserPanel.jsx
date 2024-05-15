@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { updatePlayersData } from "../features/game/gameSlice";
 import { loadTimer } from "../features/game/timerSlice";
+import WinnersComponent from "./WinnersComponent";
 
 export default function UserPanel() {
     const dispatch = useDispatch();
@@ -30,6 +31,7 @@ export default function UserPanel() {
                     })}
                 </div>
             </div>
+            <WinnersComponent />
         </div>
     )
 }
