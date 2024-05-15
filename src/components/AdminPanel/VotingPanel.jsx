@@ -17,7 +17,11 @@ export default function VotingPanel() {
             <h2>Голосование: </h2>
             <h3>Кандидаты:</h3>
             <div className="candidates-container">
-                {candidates.map(candidate => <div className="candidate">{candidate.number}</div>)}
+                {candidates.map(candidate => {
+                        <div className="candidate">
+                            {candidate.number}
+                        </div>
+                })}
             </div>
             <h3>Голоса:</h3>
             <div className="votes-container">

@@ -77,17 +77,60 @@ app.post("/setFoul", function (req, res) {
 })
 
 app.post("/setRole", function (req, res) {
-    Player.findOne({ number: req.body.data.player.number }).then(player => {
-        if (player.status !== "kicked") {
-            player.role = req.body.data.role;
-            player.save().then(() => {
-                res.send(player);
-            })
-        } else {
-            res.send(player);
-        }
+    if (req.body.data.role === "Д" || req.body.data.role === "Ш") {
+        Player.findOne({ role: req.body.data.role }).then((player) => {
+            if (!player) {
+                Player.findOne({ number: req.body.data.player.number }).then(player => {
+                    if (player.status !== "kicked") {
+                        player.role = req.body.data.role;
+                        player.save().then(() => {
+                            res.send(player);
+                        })
+                    } else {
+                        res.send(player);
+                    }
 
-    })
+                })
+            } else {
+                player.role = null;
+                player.save().then(() => {
+                    Player.findOne({ number: req.body.data.player.number }).then(player => {
+                        if (player.status !== "kicked") {
+                            player.role = req.body.data.role;
+                            player.save().then(() => {
+                                res.send(player);
+                            })
+                        } else {
+                            res.send(player);
+                        }
+
+                    })
+                })
+            }
+        })
+    } else if (req.body.data.role === "М") {
+        Player.find({ role: req.body.data.role }).then((players) => {
+            if (players.length === 2) {
+                players[0].role = null;
+                players[0].save().then(() => {
+                    Player.findOne({ number: req.body.data.player.number }).then((player) => {
+                        player.role = req.body.data.role;
+                        player.save().then(() => {
+                            res.send(player);
+                        })
+                    })
+                })
+            } else {
+                Player.findOne({ number: req.body.data.player.number }).then((player) => {
+                    player.role = req.body.data.role;
+                    player.save().then(() => {
+                        res.send(player);
+                    })
+                })
+            }
+        })
+    }
+
 })
 
 app.post("/reset", function (req, res) {
@@ -98,6 +141,7 @@ app.post("/reset", function (req, res) {
             }
             player.role = null;
             player.status = "in-game";
+            player.onVoting = false;
             player.save()
         })
         res.send(players.sort((a, b) => a.number - b.number));
@@ -105,18 +149,29 @@ app.post("/reset", function (req, res) {
 })
 
 app.post("/choose", function (req, res) {
-
+    console.log(req.body.data);
     Player.findOne({ chosen: true }).then(player => {
-        player.chosen = false;
-        player.save();
-    })
+        if (!player) {
+            Player.findOne({ number: 1 }).then((player) => {
+                player.chosen = true;
+                player.save().then(() => {
+                    res.send(player);
+                })
+            })
+        } else {
+            console.log(player);
+            player.chosen = false;
+            player.save().then(() => {
+                Player.findOne({ number: req.body.data }).then(player => {
+                    const index = req.body.data - 1;
+                    player.chosen = true;
+                    player.save().then(() => {
+                        res.send({ player: player, index: index });
+                    })
+                })
+            });
+        }
 
-    Player.findOne({ number: req.body.data }).then(player => {
-        const index = req.body.data - 1;
-        player.chosen = true;
-        player.save().then(() => {
-            res.send({ player: player, index: index });
-        })
     })
 })
 

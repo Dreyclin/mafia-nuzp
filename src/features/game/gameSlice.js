@@ -28,9 +28,10 @@ export const setFoul = createAsyncThunk(
 
 export const setRole = createAsyncThunk(
     'players/setRole',
-    async (data) => {
+    async (data, {dispatch}) => {
         try {
             const response = await axios.post("http://localhost:5000/setRole", { data })
+            dispatch(updatePlayersData());
             return response.data
         } catch (error) {
             console.log(error)
