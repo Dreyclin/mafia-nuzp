@@ -11,6 +11,11 @@ app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect('mongodb+srv://admin:freetimenuzpcheesecode@mafiacluster.fvgwqjh.mongodb.net/mafiaDB');
 
+const gameSchema = mongoose.Schema({
+    winnerTeam: String,
+    gameOver: Boolean
+})
+
 const playerSchema = mongoose.Schema({
     number: Number,
     fouls: [String],
@@ -34,7 +39,7 @@ const candidateSchema = mongoose.Schema({
 const Candidate = mongoose.model("Candidate", candidateSchema);
 const Timer = mongoose.model("Timer", timerSchema);
 const Player = mongoose.model("Player", playerSchema);
-
+const Game = mongoose.model("Game", gameSchema);
 
 
 app.post("/load", function (req, res) {
@@ -129,6 +134,13 @@ app.post("/setRole", function (req, res) {
                 })
             }
         })
+    } else {
+        Player.findOne({ number: req.body.data.player.number }).then((player) => {
+            player.role = req.body.data.role;
+            player.save().then(() => {
+                res.send(player);
+            })
+        })
     }
 
 })
@@ -144,7 +156,15 @@ app.post("/reset", function (req, res) {
             player.onVoting = false;
             player.save()
         })
-        res.send(players.sort((a, b) => a.number - b.number));
+        Candidate.deleteMany({}).then(() => {
+            Game.findOne({}).then(game => {
+                game.winnerTeam = null;
+                game.gameOver = false;
+                game.save().then(() => {
+                    res.send(players.sort((a, b) => a.number - b.number));
+                })
+            })
+        })
     })
 })
 
@@ -320,6 +340,56 @@ app.post("/setOnVoting", function (req, res) {
 
         }
 
+    })
+})
+
+app.post("/checkOver", function(req, res) {
+    Player.find({status: "in-game"}).then((players) => {
+        let blackTeamAmount = 0;
+        let redTeamAmount = 0;
+        players.forEach((player) => {
+            if(player.role === "М" || player.role === "Д"){
+                blackTeamAmount++;
+            } else if(player.role === "К" || player.role === "Ш") {
+                redTeamAmount++;
+            }
+        })
+        Game.findOne({}).then(game => {
+            console.log(game, blackTeamAmount, redTeamAmount);
+            if(blackTeamAmount === redTeamAmount) {
+                    game.winnerTeam = "Черные";
+                    game.gameOver = true;
+                    game.save().then(() => {
+                        res.send(game);
+                    })
+            } else if (blackTeamAmount === 0) {
+                    game.winnerTeam = "Красные";
+                    game.gameOver = true;
+                    game.save().then(() => {
+                        res.send(game);
+                    })
+            } else {
+                res.send(game)
+            }
+        })
+       
+    })
+})
+
+app.post("/loadGame", function(req, res) {
+    Game.find({}).then(game => {
+        if(!game.length) {
+            const newGame = new Game({
+                winnerTeam: null,
+                gameOver: false
+            })
+
+            newGame.save().then(() => {
+                res.send(newGame);
+            })
+        } else {
+            res.send(game);
+        }
     })
 })
 

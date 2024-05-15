@@ -10,7 +10,7 @@ export default function VotingPanel() {
 
     useEffect(() => {
         dispatch(loadCandidates())
-    }, [candidates])
+    }, [])
 
     return (
         <div className="voting-panel">

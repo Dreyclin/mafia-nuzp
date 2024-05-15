@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { updatePlayersData } from "../../../features/game/gameSlice";
 import { choosePlayer } from "../../../features/game/gameSlice";
+import { loadGame } from "../../../features/game/gameSlice";
 
 export default function MiddlePanel(props) {
 
@@ -17,6 +18,7 @@ export default function MiddlePanel(props) {
 
     useEffect(() => {
         dispatch(updatePlayersData());
+        dispatch(loadGame());
     }, [])
 
     function handleChooseClick(number) {

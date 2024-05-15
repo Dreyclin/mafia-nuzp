@@ -28,7 +28,7 @@ export const setFoul = createAsyncThunk(
 
 export const setRole = createAsyncThunk(
     'players/setRole',
-    async (data, {dispatch}) => {
+    async (data, { dispatch }) => {
         try {
             const response = await axios.post("http://localhost:5000/setRole", { data })
             dispatch(updatePlayersData());
@@ -67,7 +67,7 @@ export const switchPlayers = createAsyncThunk(
     'players/switch',
     async (data) => {
         try {
-            const response = await axios.post("http://localhost:5000/switch", {data})
+            const response = await axios.post("http://localhost:5000/switch", { data })
             return response.data
         } catch (error) {
             console.log(error)
@@ -77,9 +77,10 @@ export const switchPlayers = createAsyncThunk(
 
 export const kickPlayer = createAsyncThunk(
     'player/kick',
-    async (data) => {
+    async (data, {dispatch}) => {
         try {
-            const response = await axios.post("http://localhost:5000/kick", {data})
+            const response = await axios.post("http://localhost:5000/kick", { data })
+            dispatch(checkGameOver());
             return response.data
         } catch (error) {
             console.log(error)
@@ -89,7 +90,7 @@ export const kickPlayer = createAsyncThunk(
 
 export const loadCandidates = createAsyncThunk(
     'vote/loadCandidates',
-    async(data) => {
+    async (data) => {
         try {
             const response = await axios.post('http://localhost:5000/loadCandidates')
             return response.data
@@ -101,9 +102,35 @@ export const loadCandidates = createAsyncThunk(
 
 export const setOnVoting = createAsyncThunk(
     'vote/setOnVoting',
-    async(data) => {
+    async (data) => {
         try {
-            const response = await axios.post("http://localhost:5000/setOnVoting", {data})
+            const response = await axios.post("http://localhost:5000/setOnVoting", { data })
+            return response.data;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
+export const checkGameOver = createAsyncThunk(
+    'game/over',
+    async (data, {dispatch}) => {
+        try {
+            const response = await axios.post('http://localhost:5000/checkOver', { data });
+            dispatch(loadGame());
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
+export const loadGame = createAsyncThunk(
+    'game/load',
+    async (data) => {
+        try {
+            const response = await axios.post('http://localhost:5000/loadGame', { data });
+            console.log(response);
             return response.data;
         } catch (error) {
             console.log(error)
@@ -123,17 +150,14 @@ let players = [
     { number: 9, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
     { number: 10, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false }]
 
-let admin = {
-
-}
-
 let candidates = [
 ]
 
 const initialState = {
     players: players,
-    adminPanel: admin,
-    candidates: candidates
+    candidates: candidates,
+    gameOver: false,
+    winnerTeam: null
 }
 
 const gameSlice = createSlice({
@@ -176,6 +200,18 @@ const gameSlice = createSlice({
             })
             .addCase(loadCandidates.fulfilled, (state, action) => {
                 state.candidates = action.payload;
+            })
+            .addCase(loadGame.fulfilled, (state, action) => {
+                const {winnerTeam, gameOver} = action.payload;
+
+                state.winnerTeam = winnerTeam;
+                state.gameOver = gameOver;
+            })
+            .addCase(checkGameOver.fulfilled, (state, action) => {
+                const {winnerTeam, gameOver} = action.payload;
+
+                state.winnerTeam = winnerTeam;
+                state.gameOver = gameOver;
             })
     }
 })
