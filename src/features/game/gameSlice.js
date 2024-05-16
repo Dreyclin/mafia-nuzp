@@ -139,16 +139,16 @@ export const loadGame = createAsyncThunk(
 )
 
 let players = [
-    { number: 1, fouls: [null, null, null, null], role: null, chosen: true, status: "in-game", onVoting: false, votes: null },
-    { number: 2, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false, votes: null },
-    { number: 3, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false, votes: null },
-    { number: 4, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false, votes: null },
-    { number: 5, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false, votes: null },
-    { number: 6, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false, votes: null },
-    { number: 7, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false, votes: null },
-    { number: 8, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false, votes: null },
-    { number: 9, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false, votes: null },
-    { number: 10, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false, votes: null }]
+    { number: 1, fouls: [null, null, null, null], role: null, chosen: true, status: "in-game", onVoting: false },
+    { number: 2, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
+    { number: 3, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
+    { number: 4, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
+    { number: 5, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false  },
+    { number: 6, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false  },
+    { number: 7, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false  },
+    { number: 8, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false  },
+    { number: 9, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false  },
+    { number: 10, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false  }]
 
 let candidates = [
 ]
