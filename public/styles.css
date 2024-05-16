@@ -178,11 +178,11 @@ body {
     display: flex;
 }
 
-.admin-panel .candidates-container .candidate,
-.admin-palen .votes-container, .vote {
+.admin-panel .candidates-container .candidate {
     border: 2px solid black;
-    padding: 17px;
     max-width: 10%;
+    font-size: 1.5rem;
+    font-weight: 900;
 }
 
 .admin-panel .candidates-container .candidate:not(:last-child),
@@ -191,7 +191,7 @@ body {
 }
 
 .candidate button {
-    display: inline-block;
+    display: block;
 }
 
 .chosen {
