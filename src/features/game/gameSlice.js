@@ -102,9 +102,10 @@ export const loadCandidates = createAsyncThunk(
 
 export const setOnVoting = createAsyncThunk(
     'vote/setOnVoting',
-    async (data) => {
+    async (data, {dispatch}) => {
         try {
             const response = await axios.post("http://localhost:5000/setOnVoting", { data })
+            dispatch(loadCandidates());
             return response.data;
         } catch (error) {
             console.log(error)
@@ -178,7 +179,8 @@ const gameSlice = createSlice({
                 state.players[chosenIndex] = action.payload
             })
             .addCase(resetGame.fulfilled, (state, action) => {
-                state.players = action.payload
+                state.players = action.payload.players;
+                state.candidates = action.payload.candidates;
             })
             .addCase(choosePlayer.fulfilled, (state, action) => {
                 const chosenIndex = state.players.findIndex((player) => player.chosen === true);

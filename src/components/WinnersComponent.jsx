@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import React from 'react'
 
 export default function WinnersComponent(props) {
     const winnerTeam = props.winningTeam;

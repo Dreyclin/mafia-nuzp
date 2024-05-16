@@ -1,23 +1,13 @@
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { loadCandidates } from "../../features/game/gameSlice";
-import { useDispatch } from "react-redux";
+import React from "react";
 
-export default function VotingPanel() {
-
-    const candidates = useSelector(state => state.gameReducer.candidates)
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(loadCandidates())
-    }, [dispatch])
+export default function VotingPanel(props) {
 
     return (
         <div className="voting-panel">
             <h2>Голосование: </h2>
             <h3>Кандидаты:</h3>
             <div className="candidates-container">
-                {candidates.map(candidate => {
+                {props.candidates != null && props.candidates.map(candidate => {
                         return <div className="candidate">
                             {candidate.number}
                         </div>
@@ -25,7 +15,7 @@ export default function VotingPanel() {
             </div>
             <h3>Голоса:</h3>
             <div className="votes-container">
-                {candidates.map(candidate => {return <div className="vote">{candidate.votes}</div>})}
+                {props.candidates != null && props.candidates.map(candidate => {return <div className="vote">{candidate.votes}</div>})}
             </div>
         </div>
     )

@@ -156,12 +156,15 @@ app.post("/reset", function (req, res) {
             player.onVoting = false;
             player.save()
         })
-        Candidate.deleteMany({}).then(() => {
+        Candidate.deleteMany({}).then((candidates) => {
             Game.findOne({}).then(game => {
                 game.winnerTeam = null;
                 game.gameOver = false;
                 game.save().then(() => {
-                    res.send(players.sort((a, b) => a.number - b.number));
+                    Candidate.findOne({}).then(candidate => {
+                        res.send({players: players.sort((a, b) => a.number - b.number), candidates: candidate});
+                    })
+                    
                 })
             })
         })
@@ -169,6 +172,7 @@ app.post("/reset", function (req, res) {
 })
 
 app.post("/choose", function (req, res) {
+    console.log(req.body.data);
     Player.findOne({ chosen: true }).then(player => {
         if (!player) {
             Player.findOne({ number: 1 }).then((player) => {
