@@ -19,18 +19,13 @@ export default function VotingPanel(props) {
                             </div>
                         )
                     }
-
+                    const unVoted = props.candidates.filter(candidate => candidate.isVoted === false);
                     const remainingVotes = props.playersInGame.length - props.candidates.reduce((acc, candidate) => acc + (candidate.votes || 0), 0);
                     const numOfButtons = remainingVotes;
 
-                    if (index === props.candidates.length - 1) {
-                        if(props.candidates.length > 1){
-                            const unVoted = props.candidates.filter(candidate => candidate.isVoted === false)
-                            if(unVoted.length === 1){
-                                if (remainingVotes > 0 && !unVoted[0].votes) {
-                                    dispatch(props.voteForPlayer({ candidate: unVoted[0].number, votes: remainingVotes }));
-                                }
-                            }
+                    if (unVoted.length === 1) {
+                        if (props.candidates.length > 1) {
+                            dispatch(props.voteForPlayer({ candidate: unVoted[0].number, votes: remainingVotes }));
                         }
                     }
 
