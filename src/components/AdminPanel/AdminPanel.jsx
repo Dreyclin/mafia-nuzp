@@ -5,6 +5,7 @@ import VotingPanel from "./VotingPanel";
 import { useSelector, useDispatch } from "react-redux";
 import { updatePlayersData, loadGame, choosePlayer, loadCandidates } from "../../features/game/gameSlice";
 import { useEffect } from "react";
+import { loadTimer, saveTimerValue } from "../../features/game/timerSlice";
 
 export default function AdminPanel(props) {
     
@@ -12,7 +13,28 @@ export default function AdminPanel(props) {
     const players = useSelector((state) => state.gameReducer.players);
     const candidates = useSelector(state => state.gameReducer.candidates);
     let chosenPlayer = players.findIndex(player => player.chosen === true);
-    console.log(candidates);
+    
+    const {minutes, seconds} = useSelector((state) => state.timerReducer.time)
+    const {isRunning} = useSelector((state) => state.timerReducer)
+
+    useEffect(() => {
+        dispatch(loadTimer({minutes: minutes, seconds: seconds, isRunning: isRunning}));
+    }, []);
+
+    useEffect(() => {
+      let intervalId;
+      if(isRunning){
+        intervalId = setInterval(() => {
+          dispatch(saveTimerValue({minutes: minutes, seconds: seconds}))
+        }, 1000);
+      } else {
+        clearInterval(intervalId);
+      }
+
+      return () => clearInterval(intervalId);
+    }, [isRunning, dispatch]);
+    
+
     useEffect(() => {
         dispatch(updatePlayersData());
         dispatch(loadGame());
@@ -27,7 +49,7 @@ export default function AdminPanel(props) {
     return (
         <div className="admin-panel">
            <ControlPanel />
-           <MiddlePanel players = {players} chosenPlayer = {chosenPlayer} handleChooseClick={handleChooseClick}/>
+           <MiddlePanel timerMinutes={minutes} timerSeconds={seconds} players = {players} chosenPlayer = {chosenPlayer} handleChooseClick={handleChooseClick}/>
            <VotingPanel candidates = {candidates}/>
         </div>
     )

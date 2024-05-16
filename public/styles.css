@@ -190,6 +190,10 @@ body {
     border-right: none;
 }
 
+.candidate button {
+    display: inline-block;
+}
+
 .chosen {
     border: 2px solid blue;
 }

@@ -156,7 +156,7 @@ app.post("/reset", function (req, res) {
             player.onVoting = false;
             player.save()
         })
-        Candidate.deleteMany({}).then((candidates) => {
+        Candidate.deleteMany({}).then(() => {
             Game.findOne({}).then(game => {
                 game.winnerTeam = null;
                 game.gameOver = false;
@@ -228,6 +228,7 @@ app.post("/kick", function (req, res) {
 
 app.post("/loadTimer", function (req, res) {
     Timer.findOne({}).then((timer) => {
+        console.log(timer);
         if (!timer) {
             const newTimer = new Timer({
                 minutes: req.body.data.minutes,
@@ -314,6 +315,7 @@ app.post("/controls", function (req, res) {
 
 app.post("/loadCandidates", function (req, res) {
     Candidate.find({}).then(candidates => {
+        console.log(candidates);
         res.send(candidates);
     })
 })

@@ -6,8 +6,6 @@ import { timerControls } from "../../../features/game/timerSlice";
 export default function TimerControls() {
     
     const dispatch = useDispatch();
-
-
     
     return (
         <div className="timer-controls-container">

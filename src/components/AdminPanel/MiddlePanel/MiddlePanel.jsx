@@ -17,7 +17,7 @@ export default function MiddlePanel(props) {
                 })}
             </div>
             <div className="timer-container">
-                <Timer />
+                <Timer minutes={props.timerMinutes} seconds={props.timerSeconds}/>
                 <TimerControls />
             </div>
         </div>
