@@ -34,7 +34,8 @@ const timerSchema = mongoose.Schema({
 
 const candidateSchema = mongoose.Schema({
     number: Number,
-    votes: Number
+    votes: Number,
+    isVoted: Boolean
 })
 
 const Candidate = mongoose.model("Candidate", candidateSchema);
@@ -333,7 +334,8 @@ app.post("/setOnVoting", function (req, res) {
                 Candidate.find({}).then(candidates => {
                     const newCandidate = new Candidate({
                         number: candidateNumber,
-                        votes: null
+                        votes: null,
+                        isVoted: false
                     })
 
                     newCandidate.save().then(() => {
@@ -393,6 +395,26 @@ app.post("/loadGame", function(req, res) {
         } else {
             res.send(game);
         }
+    })
+})
+
+app.post("/votePlayer", function(req, res) {
+    const candidate = req.body.data.candidate;
+    const votes = req.body.data.votes;
+    let playersCanVote;
+
+    Candidate.findOne({number: candidate}).then(candidate => {
+        candidate.votes = votes;
+        candidate.isVoted = true;
+        candidate.save().then(() => {
+            Player.find({status: "in-game"}).then(players => {
+               let playersInGame = players.length;
+               playersCanVote = playersInGame - votes;
+            })
+            Candidate.find({}).then(candidates => {
+                res.send(candidates);
+            })
+        })
     })
 })
 

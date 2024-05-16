@@ -138,6 +138,18 @@ export const loadGame = createAsyncThunk(
     }
 )
 
+export const voteForPlayer = createAsyncThunk(
+    'vote/votePlayer',
+    async (data) => {
+        try {
+            const response = await axios.post('http://localhost:5000/votePlayer', {data});
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+)
+
 let players = [
     { number: 1, fouls: [null, null, null, null], role: null, chosen: true, status: "in-game", onVoting: false },
     { number: 2, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
@@ -213,6 +225,9 @@ const gameSlice = createSlice({
 
                 state.winnerTeam = winnerTeam;
                 state.gameOver = gameOver;
+            })
+            .addCase(voteForPlayer.fulfilled, (state, action) => {
+                state.candidates = action.payload;
             })
     }
 })
