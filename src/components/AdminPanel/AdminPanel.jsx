@@ -12,6 +12,9 @@ export default function AdminPanel(props) {
     const dispatch = useDispatch();
     const players = useSelector((state) => state.gameReducer.players);
     const candidates = useSelector(state => state.gameReducer.candidates);
+
+    const playersInGame = players.map(player => player.status === "in-game");
+    console.log(playersInGame);
     let chosenPlayer = players.findIndex(player => player.chosen === true);
     
     const {minutes, seconds} = useSelector((state) => state.timerReducer.time)
@@ -50,7 +53,7 @@ export default function AdminPanel(props) {
         <div className="admin-panel">
            <ControlPanel />
            <MiddlePanel timerMinutes={minutes} timerSeconds={seconds} players = {players} chosenPlayer = {chosenPlayer} handleChooseClick={handleChooseClick}/>
-           <VotingPanel candidates = {candidates}/>
+           <VotingPanel candidates = {candidates} playersInGame = {playersInGame}/>
         </div>
     )
 }

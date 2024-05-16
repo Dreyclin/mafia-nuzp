@@ -324,7 +324,7 @@ app.post("/setOnVoting", function (req, res) {
     let candidateNumber;
 
     Player.findOne({ chosen: true }).then(player => {
-        if (player.onVoting) {
+        if (player.onVoting || player.status === "kicked") {
             return null
         } else {
             player.onVoting = true;
@@ -385,6 +385,7 @@ app.post("/loadGame", function(req, res) {
             const newGame = new Game({
                 winnerTeam: null,
                 gameOver: false,
+                playersInGame: 10
             })
             newGame.save().then(() => {
                 res.send(newGame);
