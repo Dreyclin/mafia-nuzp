@@ -140,9 +140,25 @@ export const loadGame = createAsyncThunk(
 
 export const voteForPlayer = createAsyncThunk(
     'vote/votePlayer',
-    async (data) => {
+    async (data, {dispatch}) => {
         try {
             const response = await axios.post('http://localhost:5000/votePlayer', {data});
+            console.log(response.data);
+            if(response.data.endVoting){
+                dispatch(countingVotes());
+            }
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+)
+
+export const countingVotes = createAsyncThunk(
+    'vote/counting',
+    async(data) => {
+        try {
+            const response = await axios.post("http://localhost:5000/countingVotes", {data})
             return response.data;
         } catch (error) {
             console.log(error);
@@ -170,6 +186,7 @@ const initialState = {
     candidates: candidates,
     gameOver: false,
     winnerTeam: null,
+    votesCircles: 0
 }
 
 const gameSlice = createSlice({
@@ -227,7 +244,7 @@ const gameSlice = createSlice({
                 state.gameOver = gameOver;
             })
             .addCase(voteForPlayer.fulfilled, (state, action) => {
-                state.candidates = action.payload;
+                state.candidates = action.payload.candidates;
             })
     }
 })

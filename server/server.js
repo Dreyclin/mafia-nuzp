@@ -173,7 +173,6 @@ app.post("/reset", function (req, res) {
 })
 
 app.post("/choose", function (req, res) {
-    console.log(req.body.data);
     Player.findOne({ chosen: true }).then(player => {
         if (!player) {
             Player.findOne({ number: 1 }).then((player) => {
@@ -219,17 +218,25 @@ app.post("/switch", function (req, res) {
 })
 
 app.post("/kick", function (req, res) {
-    Player.findOne({ chosen: true }).then(player => {
-        player.status = "kicked";
-        player.save().then(() => {
-            res.send(player);
+    if(req.body.data === false){
+        Player.findOne({ chosen: true }).then(player => {
+            player.status = "kicked";
+            player.save().then(() => {
+                res.send(player);
+            })
         })
-    })
+    } else {
+        Player.findOne({number: req.body.data}).then(player => {
+            player.status = "kicked";
+            player.save().then(() => {
+                res.send(player);
+            })
+        })
+    }
 })
 
 app.post("/loadTimer", function (req, res) {
     Timer.findOne({}).then((timer) => {
-        console.log(timer);
         if (!timer) {
             const newTimer = new Timer({
                 minutes: req.body.data.minutes,
@@ -316,7 +323,6 @@ app.post("/controls", function (req, res) {
 
 app.post("/loadCandidates", function (req, res) {
     Candidate.find({}).then(candidates => {
-        console.log(candidates);
         res.send(candidates);
     })
 })
@@ -401,20 +407,34 @@ app.post("/loadGame", function(req, res) {
 app.post("/votePlayer", function(req, res) {
     const candidate = req.body.data.candidate;
     const votes = req.body.data.votes;
-    let playersCanVote;
 
     Candidate.findOne({number: candidate}).then(candidate => {
         candidate.votes = votes;
         candidate.isVoted = true;
+
         candidate.save().then(() => {
-            Player.find({status: "in-game"}).then(players => {
-               let playersInGame = players.length;
-               playersCanVote = playersInGame - votes;
-            })
             Candidate.find({}).then(candidates => {
-                res.send(candidates);
+                res.send({candidates: candidates, endVoting: req.body.data.endVoting});
             })
         })
+    })
+})
+
+app.post("/countingVotes", function(req, res) {
+    Candidate.find({}).then(candidates => {
+        console.log(candidates);
+        let maxVotes = Math.max(...candidates.map(candidate => candidate.votes));
+        console.log(maxVotes);
+        let elementsWithMaxVotes = candidates.filter(candidate => candidate.votes === maxVotes);
+
+        console.log(elementsWithMaxVotes);
+    })
+})
+
+app.post("/resetVoting", function(req, res){
+    let votingCircles = 0;
+    Candidate.deleteMany({}).then(() => {
+        res.send({candidates: null, votingCircles: votingCircles})
     })
 })
 

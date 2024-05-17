@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
+import { countingVotes } from "../../features/game/gameSlice";
 
 export default function VotingPanel(props) {
     const dispatch = useDispatch();
@@ -19,13 +20,14 @@ export default function VotingPanel(props) {
                             </div>
                         )
                     }
+
                     const unVoted = props.candidates.filter(candidate => candidate.isVoted === false);
                     const remainingVotes = props.playersInGame.length - props.candidates.reduce((acc, candidate) => acc + (candidate.votes || 0), 0);
                     const numOfButtons = remainingVotes;
 
                     if (unVoted.length === 1) {
                         if (props.candidates.length > 1) {
-                            dispatch(props.voteForPlayer({ candidate: unVoted[0].number, votes: remainingVotes }));
+                            dispatch(props.voteForPlayer({ candidate: unVoted[0].number, votes: remainingVotes, endVoting: true }));
                         }
                     }
 
@@ -40,7 +42,7 @@ export default function VotingPanel(props) {
                                     <button
                                         key={`${candidate.number}-${number}`}
                                         id={`${candidate.number}-${number}`}
-                                        onClick={(event) => dispatch(props.voteForPlayer({ candidate: candidate.number, votes: number }))}>
+                                        onClick={(event) => dispatch(props.voteForPlayer({ candidate: candidate.number, votes: number, endVoting: false }))}>
                                         {number}
                                     </button>
                                 );
