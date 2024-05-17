@@ -162,9 +162,10 @@ app.post("/reset", function (req, res) {
             Game.findOne({}).then(game => {
                 game.winnerTeam = null;
                 game.gameOver = false;
+                game.votingCircles = 0;
                 game.save().then(() => {
                     Candidate.findOne({}).then(candidate => {
-                        res.send({ players: players.sort((a, b) => a.number - b.number), candidates: candidate });
+                        res.send({ players: players.sort((a, b) => a.number - b.number), candidates: candidate, votingCircles: game.votingCircles });
                     })
 
                 })
@@ -432,13 +433,14 @@ app.post("/votePlayer", function (req, res) {
 })
 
 app.post("/countingVotes", function (req, res) {
+    let newCandidates;
     Candidate.find({}).then(candidates => {
         let maxVotes = Math.max(...candidates.map(candidate => candidate.votes));
         let elementsWithMaxVotes = candidates.filter(candidate => candidate.votes === maxVotes);
         if (elementsWithMaxVotes.length === 1) {
             res.send({ candidates: null, playerToKick: elementsWithMaxVotes[0].number, resetVoting: true })
         } else {
-            const newCandidates = elementsWithMaxVotes.map(element => {
+            newCandidates = elementsWithMaxVotes.map(element => {
                 element.isVoted = false;
                 element.votes = 0;
                 return element;
@@ -447,13 +449,16 @@ app.post("/countingVotes", function (req, res) {
             candidates.forEach(element => {
                 element.save();
             });
-            Game.findOne({}).then((game) => {
-                game.votingCircles++;
-                game.save().then(() => {
-                    res.send({candidates: newCandidates, votingCircles: game.votingCircles, resetVoting: false})
-                })
-            })
         }
+    })
+
+    Game.findOne({}).then((game) => {
+        game.votingCircles++;
+        if(game.votingCircles === 2){
+        }
+        game.save().then(() => {
+            res.send({candidates: newCandidates, votingCircles: game.votingCircles, resetVoting: false})
+        })
     })
 })
 

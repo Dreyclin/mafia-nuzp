@@ -31,6 +31,25 @@ export default function VotingPanel(props) {
                             dispatch(props.voteForPlayer({ candidate: unVoted[0].number, votes: remainingVotes, endVoting: true }));
                         }
                     }
+                    console.log(props.votingCircles);
+                    if(props.votingCircles === 2){
+                        return(
+                            <div className="candidate">
+                                <span>{props.candidates.map(candidate => candidate.number)}</span>
+                                {Array.from({ length: numOfButtons }, (_, index) => {
+                                let number = index + 1;
+                                return (
+                                    <button
+                                        key={`${candidate.number}-${number}`}
+                                        id={`${candidate.number}-${number}`}
+                                        onClick={(event) => {unVoted.length === 1 ? dispatch(props.voteForPlayer({ candidate: candidate.number, votes: number, endVoting: true})) : dispatch(props.voteForPlayer({ candidate: candidate.number, votes: number, endVoting: false}))} }>
+                                        {number}
+                                    </button>
+                                );
+                            })}
+                            </div>
+                        )
+                    }
 
                     return (
                         <div className="candidate" key={candidate.number}>

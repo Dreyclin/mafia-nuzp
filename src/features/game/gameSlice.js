@@ -226,6 +226,7 @@ const gameSlice = createSlice({
             .addCase(resetGame.fulfilled, (state, action) => {
                 state.players = action.payload.players;
                 state.candidates = action.payload.candidates;
+                state.votingCircles = action.payload.votingCircles;
             })
             .addCase(choosePlayer.fulfilled, (state, action) => {
                 const chosenIndex = state.players.findIndex((player) => player.chosen === true);
@@ -266,6 +267,7 @@ const gameSlice = createSlice({
             })
             .addCase(countingVotes.fulfilled, (state, action) => {
                 state.candidates = action.payload.candidates;
+                state.votingCircles = action.payload.votingCircles;
             })
             .addCase(resetVoting.fulfilled, (state, action) => {
                 state.candidates = action.payload.candidates;
