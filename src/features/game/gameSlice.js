@@ -156,9 +156,25 @@ export const voteForPlayer = createAsyncThunk(
 
 export const countingVotes = createAsyncThunk(
     'vote/counting',
-    async(data) => {
+    async(data, {dispatch}) => {
         try {
             const response = await axios.post("http://localhost:5000/countingVotes", {data})
+            if(response.data.resetVoting){
+                dispatch(kickPlayer(response.data.playerToKick))
+                dispatch(resetVoting())
+            }
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+)
+
+export const resetVoting = createAsyncThunk(
+    'vote/reset',
+    async(data) => {
+        try {
+            const response = await axios.post("http://localhost:5000/resetVoting", {data})
             return response.data;
         } catch (error) {
             console.log(error);
@@ -186,7 +202,7 @@ const initialState = {
     candidates: candidates,
     gameOver: false,
     winnerTeam: null,
-    votesCircles: 0
+    votingCircles: 0
 }
 
 const gameSlice = createSlice({
@@ -245,6 +261,13 @@ const gameSlice = createSlice({
             })
             .addCase(voteForPlayer.fulfilled, (state, action) => {
                 state.candidates = action.payload.candidates;
+            })
+            .addCase(countingVotes.fulfilled, (state, action) => {
+                state.candidates = action.payload.candidates;
+            })
+            .addCase(resetVoting.fulfilled, (state, action) => {
+                state.candidates = action.payload.candidates;
+                state.votingCircles = action.payload.votingCircles;
             })
     }
 })

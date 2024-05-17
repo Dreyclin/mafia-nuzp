@@ -14,7 +14,8 @@ mongoose.connect('mongodb+srv://admin:freetimenuzpcheesecode@mafiacluster.fvgwqj
 const gameSchema = mongoose.Schema({
     winnerTeam: String,
     gameOver: Boolean,
-    roles: [Object]
+    roles: [Object],
+    votingCircles: Number
 })
 
 const playerSchema = mongoose.Schema({
@@ -163,9 +164,9 @@ app.post("/reset", function (req, res) {
                 game.gameOver = false;
                 game.save().then(() => {
                     Candidate.findOne({}).then(candidate => {
-                        res.send({players: players.sort((a, b) => a.number - b.number), candidates: candidate});
+                        res.send({ players: players.sort((a, b) => a.number - b.number), candidates: candidate });
                     })
-                    
+
                 })
             })
         })
@@ -218,7 +219,7 @@ app.post("/switch", function (req, res) {
 })
 
 app.post("/kick", function (req, res) {
-    if(req.body.data === false){
+    if (req.body.data === false) {
         Player.findOne({ chosen: true }).then(player => {
             player.status = "kicked";
             player.save().then(() => {
@@ -226,7 +227,7 @@ app.post("/kick", function (req, res) {
             })
         })
     } else {
-        Player.findOne({number: req.body.data}).then(player => {
+        Player.findOne({ number: req.body.data }).then(player => {
             player.status = "kicked";
             player.save().then(() => {
                 res.send(player);
@@ -355,45 +356,46 @@ app.post("/setOnVoting", function (req, res) {
     })
 })
 
-app.post("/checkOver", function(req, res) {
-    Player.find({status: "in-game"}).then((players) => {
+app.post("/checkOver", function (req, res) {
+    Player.find({ status: "in-game" }).then((players) => {
         let blackTeamAmount = 0;
         let redTeamAmount = 0;
         players.forEach((player) => {
-            if(player.role === "М" || player.role === "Д"){
+            if (player.role === "М" || player.role === "Д") {
                 blackTeamAmount++;
-            } else if(player.role === "К" || player.role === "Ш") {
+            } else if (player.role === "К" || player.role === "Ш") {
                 redTeamAmount++;
             }
         })
         Game.findOne({}).then(game => {
-            if(blackTeamAmount === redTeamAmount) {
-                    game.winnerTeam = "Черные";
-                    game.gameOver = true;
-                    game.save().then(() => {
-                        res.send(game);
-                    })
+            if (blackTeamAmount === redTeamAmount) {
+                game.winnerTeam = "Черные";
+                game.gameOver = true;
+                game.save().then(() => {
+                    res.send(game);
+                })
             } else if (blackTeamAmount === 0) {
-                    game.winnerTeam = "Красные";
-                    game.gameOver = true;
-                    game.save().then(() => {
-                        res.send(game);
-                    })
+                game.winnerTeam = "Красные";
+                game.gameOver = true;
+                game.save().then(() => {
+                    res.send(game);
+                })
             } else {
                 res.send(game)
             }
         })
-       
+
     })
 })
 
-app.post("/loadGame", function(req, res) {
+app.post("/loadGame", function (req, res) {
     Game.findOne({}).then(game => {
-        if(!game) {
+        if (!game) {
             const newGame = new Game({
                 winnerTeam: null,
                 gameOver: false,
-                playersInGame: 10
+                playersInGame: 10,
+                votingCircles: 0
             })
             newGame.save().then(() => {
                 res.send(newGame);
@@ -404,37 +406,41 @@ app.post("/loadGame", function(req, res) {
     })
 })
 
-app.post("/votePlayer", function(req, res) {
+app.post("/votePlayer", function (req, res) {
     const candidate = req.body.data.candidate;
     const votes = req.body.data.votes;
 
-    Candidate.findOne({number: candidate}).then(candidate => {
+    Candidate.findOne({ number: candidate }).then(candidate => {
         candidate.votes = votes;
         candidate.isVoted = true;
 
         candidate.save().then(() => {
             Candidate.find({}).then(candidates => {
-                res.send({candidates: candidates, endVoting: req.body.data.endVoting});
+                res.send({ candidates: candidates, endVoting: req.body.data.endVoting });
             })
         })
     })
 })
 
-app.post("/countingVotes", function(req, res) {
+app.post("/countingVotes", function (req, res) {
     Candidate.find({}).then(candidates => {
-        console.log(candidates);
         let maxVotes = Math.max(...candidates.map(candidate => candidate.votes));
-        console.log(maxVotes);
         let elementsWithMaxVotes = candidates.filter(candidate => candidate.votes === maxVotes);
 
-        console.log(elementsWithMaxVotes);
+        if (elementsWithMaxVotes.length === 1) {
+            res.send({ candidates: null, playerToKick: elementsWithMaxVotes[0].number, resetVoting: true })
+        }
     })
 })
 
-app.post("/resetVoting", function(req, res){
+app.post("/resetVoting", function (req, res) {
     let votingCircles = 0;
+    Game.findOne({}).then((game) => {
+        game.votingCircles = votingCircles;
+        game.save();
+    })
     Candidate.deleteMany({}).then(() => {
-        res.send({candidates: null, votingCircles: votingCircles})
+        res.send({ candidates: null, votingCircles: votingCircles })
     })
 })
 
