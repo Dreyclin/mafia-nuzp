@@ -219,19 +219,28 @@ app.post("/switch", function (req, res) {
 })
 
 app.post("/kick", function (req, res) {
-    if (req.body.data === false) {
-        Player.findOne({ chosen: true }).then(player => {
-            player.status = "kicked";
-            player.save().then(() => {
-                res.send(player);
+    console.log(req.body.data);
+    if (!req.body.data) {
+        Player.find({}).then(players => {
+            players.forEach(player => {
+                if (player.chosen === true) {
+                    player.status = "kicked";
+                    player.save()
+                }
             })
+            res.send(players.sort((a, b) => a.number - b.number));
         })
-    } else {
-        Player.findOne({ number: req.body.data }).then(player => {
-            player.status = "kicked";
-            player.save().then(() => {
-                res.send(player);
+    }
+    else {
+        console.log(req.body.data);
+        Player.find({}).then(players => {
+            players.forEach(player => {
+                if (player.number === req.body.data) {
+                    player.status = "kicked";
+                    player.save();
+                }
             })
+            res.send(players.sort((a, b) => a.number - b.number));
         })
     }
 })

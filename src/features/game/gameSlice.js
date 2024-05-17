@@ -238,8 +238,10 @@ const gameSlice = createSlice({
                 state.players = action.payload
             })
             .addCase(kickPlayer.fulfilled, (state, action) => {
-                const chosenIndex = state.players.findIndex((player) => player.chosen === true);
-                state.players[chosenIndex] = action.payload
+                // const chosenIndex = state.players.findIndex((player) => player.chosen === true);
+                // state.players[chosenIndex] = action.payload
+
+                state.players = action.payload;
             })
             .addCase(setOnVoting.fulfilled, (state, action) => {
                 state.candidates = action.payload;
