@@ -24,7 +24,8 @@ export default function VotingPanel(props) {
                     const unVoted = props.candidates.filter(candidate => candidate.isVoted === false);
                     const remainingVotes = props.playersInGame.length - props.candidates.reduce((acc, candidate) => acc + (candidate.votes || 0), 0);
                     const numOfButtons = remainingVotes;
-
+                    console.log(remainingVotes);
+                    console.log(unVoted);
                     if (unVoted.length === 1) {
                         if (props.candidates.length > 1) {
                             dispatch(props.voteForPlayer({ candidate: unVoted[0].number, votes: remainingVotes, endVoting: true }));
@@ -42,7 +43,7 @@ export default function VotingPanel(props) {
                                     <button
                                         key={`${candidate.number}-${number}`}
                                         id={`${candidate.number}-${number}`}
-                                        onClick={(event) => dispatch(props.voteForPlayer({ candidate: candidate.number, votes: number, endVoting: false }))}>
+                                        onClick={(event) => {unVoted.length === 1 ? dispatch(props.voteForPlayer({ candidate: candidate.number, votes: number, endVoting: true})) : dispatch(props.voteForPlayer({ candidate: candidate.number, votes: number, endVoting: false}))} }>
                                         {number}
                                     </button>
                                 );

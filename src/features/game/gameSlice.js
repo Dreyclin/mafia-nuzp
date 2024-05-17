@@ -143,7 +143,6 @@ export const voteForPlayer = createAsyncThunk(
     async (data, {dispatch}) => {
         try {
             const response = await axios.post('http://localhost:5000/votePlayer', {data});
-            console.log(response.data);
             if(response.data.endVoting){
                 dispatch(countingVotes());
             }
@@ -160,6 +159,7 @@ export const countingVotes = createAsyncThunk(
         try {
             const response = await axios.post("http://localhost:5000/countingVotes", {data})
             if(response.data.resetVoting){
+                console.log(response.data.playerToKick)
                 dispatch(kickPlayer(response.data.playerToKick))
                 dispatch(resetVoting())
             }

@@ -58,6 +58,18 @@ export const controlAmountTime = createAsyncThunk(
     }
 )
 
+export const resetTimer = createAsyncThunk(
+    'timer/reset',
+    async(data) => {
+        try {
+            const response = await axios.post("http://localhost:5000/resetTimer", {data})
+            return response.data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
 const timerSlice = createSlice({
     name: "timer",
     initialState,
@@ -88,6 +100,9 @@ const timerSlice = createSlice({
             })
             .addCase(timerControls.fulfilled, (state, action) => {
                 state.isRunning = action.payload
+            })
+            .addCase(resetTimer.fulfilled, (state, action) => {
+                state.time = action.payload;
             })
     }
 })
