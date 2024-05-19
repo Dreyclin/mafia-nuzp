@@ -98,7 +98,7 @@ app.post("/setRole", function (req, res) {
                     }
 
                 })
-            } else if (req.body.data.role === "К") {
+            } else {
                 player.role = null;
                 player.save().then(() => {
                     Player.findOne({ number: req.body.data.player.number }).then(player => {
@@ -121,7 +121,7 @@ app.post("/setRole", function (req, res) {
                 players[0].role = null;
                 players[0].save().then(() => {
                     Player.findOne({ number: req.body.data.player.number }).then((player) => {
-                        if(player.status != "kicked") {
+                        if (player.status != "kicked") {
                             player.role = req.body.data.role;
                             player.save().then(() => {
                                 res.send(player);
@@ -133,7 +133,7 @@ app.post("/setRole", function (req, res) {
                 })
             } else {
                 Player.findOne({ number: req.body.data.player.number }).then((player) => {
-                    if(player.status != "kicked"){
+                    if (player.status != "kicked") {
                         player.role = req.body.data.role;
                         player.save().then(() => {
                             res.send(player);
@@ -142,6 +142,17 @@ app.post("/setRole", function (req, res) {
                         res.send(player);
                     }
                 })
+            }
+        })
+    } else {
+        Player.findOne({ number: req.body.data.player.number }).then(player => {
+            if (player.status != "kicked") {
+                player.role = req.body.data.role;
+                player.save().then(() => {
+                    res.send(player);
+                })
+            } else {
+                res.send(player);
             }
         })
     }
@@ -220,7 +231,6 @@ app.post("/switch", function (req, res) {
 })
 
 app.post("/kick", function (req, res) {
-    console.log(req.body.data);
     if (!req.body.data) {
         Player.find({}).then(players => {
             players.forEach(player => {
@@ -233,7 +243,6 @@ app.post("/kick", function (req, res) {
         })
     }
     else {
-        console.log(req.body.data);
         Player.find({}).then(players => {
             players.forEach(player => {
                 if (player.number === req.body.data) {
@@ -418,7 +427,6 @@ app.post("/loadGame", function (req, res) {
 app.post("/votePlayer", function (req, res) {
     const candidate = req.body.data.candidate;
     const votes = req.body.data.votes;
-    console.log(candidate);
     Candidate.findOne({ number: candidate }).then(candidate => {
         candidate.votes = votes;
         candidate.isVoted = true;
@@ -471,7 +479,6 @@ app.post("/resetVoting", function (req, res) {
 
 app.post("/resetTimer", function (req, res) {
     Timer.findOne({}).then(timer => {
-        console.log(timer);
         timer.minutes = 1;
         timer.seconds = 0;
         timer.save().then(() => {
@@ -512,6 +519,43 @@ app.post("/sliceKick", async function (req, res) {
         }
     }
 })
+
+app.post("/checkActiveRoles", async function (req, res) {
+    try {
+        let don = false;
+        let sheriff = false;
+        let mafia = false;
+        console.log(don, sheriff, mafia);
+        const donPlayer = await Player.findOne({ role: "Д" });
+        if (donPlayer) {
+            don = true;
+        }
+
+        const sheriffPlayer = await Player.findOne({ role: "Ш" });
+        if (sheriffPlayer) {
+            sheriff = true;
+        }
+
+        const mafiaPlayers = await Player.find({ role: "М" });
+        if (mafiaPlayers.length === 2) {
+            mafia = true;
+        }
+
+        console.log(don, sheriff, mafia);
+
+        if (don && sheriff && mafia) {
+            console.log("FINALLY!!!!!!");
+            const players = await Player.find({});
+            res.send(players);
+        } else {
+            const players = await Player.find({});
+            res.send(players);
+        }
+    } catch (error) {
+        console.error("Error occurred:", error);
+        res.status(500).send("Internal server error");
+    }
+});
 
 app.listen(5000, function () {
     console.log("App is listening on port 5000")

@@ -32,6 +32,7 @@ export const setRole = createAsyncThunk(
         try {
             const response = await axios.post("http://localhost:5000/setRole", { data })
             dispatch(updatePlayersData());
+            // dispatch(checkActiveRoles());
             return response.data
         } catch (error) {
             console.log(error)
@@ -196,6 +197,18 @@ export const sliceKicking = createAsyncThunk(
     }
 )
 
+export const checkActiveRoles = createAsyncThunk(
+    'player/checkActive',
+    async(data, {dispatch}) => {
+        try {
+            const response = await axios.post("http://localhost:5000/checkActiveRoles", {data})
+            return response.data;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
 let players = [
     { number: 1, fouls: [null, null, null, null], role: null, chosen: true, status: "in-game", onVoting: false },
     { number: 2, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
@@ -288,6 +301,9 @@ const gameSlice = createSlice({
                 state.votingCircles = action.payload.votingCircles;
             })
             .addCase(sliceKicking.fulfilled, (state, action) => {
+                state.players = action.payload;
+            })
+            .addCase(checkActiveRoles.fulfilled, (state, action) => {
                 state.players = action.payload;
             })
     }
