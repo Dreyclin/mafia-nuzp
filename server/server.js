@@ -98,7 +98,7 @@ app.post("/setRole", function (req, res) {
                     }
 
                 })
-            } else {
+            } else if (req.body.data.role === "К") {
                 player.role = null;
                 player.save().then(() => {
                     Player.findOne({ number: req.body.data.player.number }).then(player => {
@@ -121,30 +121,30 @@ app.post("/setRole", function (req, res) {
                 players[0].role = null;
                 players[0].save().then(() => {
                     Player.findOne({ number: req.body.data.player.number }).then((player) => {
-                        player.role = req.body.data.role;
-                        player.save().then(() => {
+                        if(player.status != "kicked") {
+                            player.role = req.body.data.role;
+                            player.save().then(() => {
+                                res.send(player);
+                            })
+                        } else {
                             res.send(player);
-                        })
+                        }
                     })
                 })
             } else {
                 Player.findOne({ number: req.body.data.player.number }).then((player) => {
-                    player.role = req.body.data.role;
-                    player.save().then(() => {
+                    if(player.status != "kicked"){
+                        player.role = req.body.data.role;
+                        player.save().then(() => {
+                            res.send(player);
+                        })
+                    } else {
                         res.send(player);
-                    })
+                    }
                 })
             }
         })
-    } else {
-        Player.findOne({ number: req.body.data.player.number }).then((player) => {
-            player.role = req.body.data.role;
-            player.save().then(() => {
-                res.send(player);
-            })
-        })
     }
-
 })
 
 app.post("/reset", function (req, res) {
@@ -263,7 +263,6 @@ app.post("/loadTimer", function (req, res) {
         }
     })
 })
-
 app.post("/controlAmountTime", function (req, res) {
     Timer.findOne({}).then((timer) => {
         if (req.body.data === "inc") {
@@ -452,7 +451,7 @@ app.post("/countingVotes", function (req, res) {
             Game.findOne({}).then((game) => {
                 game.votingCircles++;
                 game.save().then(() => {
-                    res.send({candidates: newCandidates, votingCircles: game.votingCircles, resetVoting: false})
+                    res.send({ candidates: newCandidates, votingCircles: game.votingCircles, resetVoting: false })
                 })
             })
         }
@@ -470,7 +469,7 @@ app.post("/resetVoting", function (req, res) {
     })
 })
 
-app.post("/resetTimer", function(req, res) {
+app.post("/resetTimer", function (req, res) {
     Timer.findOne({}).then(timer => {
         console.log(timer);
         timer.minutes = 1;
@@ -481,13 +480,13 @@ app.post("/resetTimer", function(req, res) {
     })
 })
 
-app.post("/sliceKick", async function(req, res) {
+app.post("/sliceKick", async function (req, res) {
     const playersInGame = req.body.data.playersInGame;
     const votes = req.body.data.votes;
 
     const votesToKick = Math.ceil(playersInGame / 2);
 
-    if(votes >= votesToKick){
+    if (votes >= votesToKick) {
         try {
             const candidates = await Candidate.find({});
             for (const candidate of candidates) {
