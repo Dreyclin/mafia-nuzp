@@ -26,14 +26,11 @@ export default function VotingPanel(props) {
                     const unVoted = props.candidates.filter(candidate => candidate.isVoted === false);
                     const remainingVotes = props.playersInGame.length - props.candidates.reduce((acc, candidate) => acc + (candidate.votes || 0), 0);
                     const numOfButtons = remainingVotes;
-                    console.log(remainingVotes);
-                    console.log(unVoted);
                     if (unVoted.length === 1) {
                         if (props.candidates.length > 1) {
                             dispatch(props.voteForPlayer({ candidate: unVoted[0].number, votes: remainingVotes, endVoting: true }));
                         }
                     }
-                    console.log(props.votingCircles);
                     if(props.votingCircles === 2){
                         kickTwo = true;
                         return(

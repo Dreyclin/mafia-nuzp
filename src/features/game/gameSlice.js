@@ -31,8 +31,8 @@ export const setRole = createAsyncThunk(
     async (data, { dispatch }) => {
         try {
             const response = await axios.post("http://localhost:5000/setRole", { data })
+            dispatch(checkActiveRoles());
             dispatch(updatePlayersData());
-            // dispatch(checkActiveRoles());
             return response.data
         } catch (error) {
             console.log(error)

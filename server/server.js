@@ -520,42 +520,74 @@ app.post("/sliceKick", async function (req, res) {
     }
 })
 
-app.post("/checkActiveRoles", async function (req, res) {
-    try {
-        let don = false;
-        let sheriff = false;
-        let mafia = false;
-        console.log(don, sheriff, mafia);
-        const donPlayer = await Player.findOne({ role: "Д" });
-        if (donPlayer) {
+app.post("/checkActiveRoles", function (req, res) {
+    // try {
+    let don = false;
+    let sheriff = false;
+    let mafia = false;
+
+    Player.findOne({role: "Д"}).then(player => {
+        if(player){
             don = true;
+            Player.findOne({role: "Ш"}).then(player => {
+                if(player){
+                    sheriff = true;
+                    Player.find({role: "М"}).then(players => {
+                        if(players.length === 2){
+                            mafia = true;
+                            Player.find({}).then(players => {
+                                if(don && mafia && sheriff){
+                                    players.forEach(player => {
+                                        if(player.role === null){
+                                            player.role = "К"
+                                            player.save()
+                                        }
+                                    })
+                                    res.send(players.sort((a, b) => a.number - b.number));
+                                } else {
+                                    res.send(players.sort((a, b) => a.number - b.number))
+                                }
+                            })
+                        }
+                    })
+                }
+            })
         }
+    })
 
-        const sheriffPlayer = await Player.findOne({ role: "Ш" });
-        if (sheriffPlayer) {
-            sheriff = true;
-        }
 
-        const mafiaPlayers = await Player.find({ role: "М" });
-        if (mafiaPlayers.length === 2) {
-            mafia = true;
-        }
 
-        console.log(don, sheriff, mafia);
 
-        if (don && sheriff && mafia) {
-            console.log("FINALLY!!!!!!");
-            const players = await Player.find({});
-            res.send(players);
-        } else {
-            const players = await Player.find({});
-            res.send(players);
-        }
-    } catch (error) {
-        console.error("Error occurred:", error);
-        res.status(500).send("Internal server error");
-    }
-});
+    //     const donPlayer = await Player.findOne({ role: "Д" });
+    //     if (donPlayer) {
+    //         don = true;
+    //     }
+
+    //     const sheriffPlayer = await Player.findOne({ role: "Ш" });
+    //     if (sheriffPlayer) {
+    //         sheriff = true;
+    //     }
+
+    //     const mafiaPlayers = await Player.find({ role: "М" });
+    //     if (mafiaPlayers.length === 2) {
+    //         mafia = true;
+    //     }
+
+    //     console.log(don, sheriff, mafia);
+
+    //     if (don && sheriff && mafia) {
+    //         console.log("FINALLY!!!!!!");
+    //         const players = await Player.find({});
+    //         res.send(players.sort((a, b) => a.number - b.number));
+    //     } else {
+    //         const players = await Player.find({});
+    //         res.send(players.sort((a, b) => a.number - b.number));
+    //     }
+    // } catch (error) {
+    //     console.error("Error occurred:", error);
+    //     res.status(500).send("Internal server error");
+    // }
+})
 
 app.listen(5000, function () {
     console.log("App is listening on port 5000")

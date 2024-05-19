@@ -15,7 +15,6 @@ export default function AdminPanel(props) {
     const votingCircles = useSelector(state => state.gameReducer.votingCircles);
     const playersInGame = players.map(player => player.status === "in-game");
 
-    console.log(votingCircles);
     let chosenPlayer = players.findIndex(player => player.chosen === true);
     
     const {minutes, seconds} = useSelector((state) => state.timerReducer.time)
