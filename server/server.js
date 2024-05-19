@@ -449,16 +449,13 @@ app.post("/countingVotes", function (req, res) {
             candidates.forEach(element => {
                 element.save();
             });
+            Game.findOne({}).then((game) => {
+                game.votingCircles++;
+                game.save().then(() => {
+                    res.send({candidates: newCandidates, votingCircles: game.votingCircles, resetVoting: false})
+                })
+            })
         }
-    })
-
-    Game.findOne({}).then((game) => {
-        game.votingCircles++;
-        if(game.votingCircles === 2){
-        }
-        game.save().then(() => {
-            res.send({candidates: newCandidates, votingCircles: game.votingCircles, resetVoting: false})
-        })
     })
 })
 
@@ -482,6 +479,39 @@ app.post("/resetTimer", function(req, res) {
             res.send(timer);
         })
     })
+})
+
+app.post("/sliceKick", async function(req, res) {
+    const playersInGame = req.body.data.playersInGame;
+    const votes = req.body.data.votes;
+
+    const votesToKick = Math.ceil(playersInGame / 2);
+
+    if(votes >= votesToKick){
+        try {
+            const candidates = await Candidate.find({});
+            for (const candidate of candidates) {
+                const player = await Player.findOne({ number: candidate.number });
+                if (player) {
+                    player.status = "kicked";
+                    await player.save();
+                }
+            }
+            const players = await Player.find({});
+            res.send(players.sort((a, b) => a.number - b.number));
+        } catch (error) {
+            console.error("Error occurred:", error);
+            res.status(500).send("Internal server error");
+        }
+    } else {
+        try {
+            const players = await Player.find({});
+            res.send(players.sort((a, b) => a.number - b.number));
+        } catch (error) {
+            console.error("Error occurred:", error);
+            res.status(500).send("Internal server error");
+        }
+    }
 })
 
 app.listen(5000, function () {

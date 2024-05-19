@@ -1,16 +1,19 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { countingVotes } from "../../features/game/gameSlice";
+import { countingVotes, sliceKicking } from "../../features/game/gameSlice";
 
 export default function VotingPanel(props) {
     const dispatch = useDispatch();
-
+    let kickTwo = false
     return (
         <div className="voting-panel">
             <h2>Голосование: </h2>
             <h3>Кандидаты:</h3>
             <div className="candidates-container">
                 {props.candidates != null && props.candidates.map((candidate, index) => {
+                    if(kickTwo === true){
+                        return null;
+                    }
                     if (candidate.isVoted) {
                         return (
                             <div className="candidate" key={candidate.number}>
@@ -20,7 +23,6 @@ export default function VotingPanel(props) {
                             </div>
                         )
                     }
-
                     const unVoted = props.candidates.filter(candidate => candidate.isVoted === false);
                     const remainingVotes = props.playersInGame.length - props.candidates.reduce((acc, candidate) => acc + (candidate.votes || 0), 0);
                     const numOfButtons = remainingVotes;
@@ -33,16 +35,17 @@ export default function VotingPanel(props) {
                     }
                     console.log(props.votingCircles);
                     if(props.votingCircles === 2){
+                        kickTwo = true;
                         return(
                             <div className="candidate">
-                                <span>{props.candidates.map(candidate => candidate.number)}</span>
+                                <span>{props.candidates.map(candidate => candidate.number + ",")}</span>
                                 {Array.from({ length: numOfButtons }, (_, index) => {
                                 let number = index + 1;
                                 return (
                                     <button
                                         key={`${candidate.number}-${number}`}
                                         id={`${candidate.number}-${number}`}
-                                        onClick={(event) => {unVoted.length === 1 ? dispatch(props.voteForPlayer({ candidate: candidate.number, votes: number, endVoting: true})) : dispatch(props.voteForPlayer({ candidate: candidate.number, votes: number, endVoting: false}))} }>
+                                        onClick={(event) => {dispatch(sliceKicking({candidates: props.candidates, votes: number, playersInGame: props.playersInGame.length}))} }>
                                         {number}
                                     </button>
                                 );

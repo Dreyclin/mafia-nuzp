@@ -182,6 +182,20 @@ export const resetVoting = createAsyncThunk(
     }
 )
 
+export const sliceKicking = createAsyncThunk(
+    'vote/sliceKicking',
+    async (data, {dispatch}) => {
+        try {
+            const response = await axios.post("http://localhost:5000/sliceKick", { data })
+            dispatch(resetVoting());
+            dispatch(checkGameOver());
+            return response.data
+        } catch (error) {
+            console.log(error);
+        }
+    }
+)
+
 let players = [
     { number: 1, fouls: [null, null, null, null], role: null, chosen: true, status: "in-game", onVoting: false },
     { number: 2, fouls: [null, null, null, null], role: null, chosen: false, status: "in-game", onVoting: false },
@@ -272,6 +286,9 @@ const gameSlice = createSlice({
             .addCase(resetVoting.fulfilled, (state, action) => {
                 state.candidates = action.payload.candidates;
                 state.votingCircles = action.payload.votingCircles;
+            })
+            .addCase(sliceKicking.fulfilled, (state, action) => {
+                state.players = action.payload;
             })
     }
 })
