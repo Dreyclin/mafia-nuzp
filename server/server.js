@@ -472,6 +472,14 @@ app.post("/resetVoting", function (req, res) {
         game.votingCircles = votingCircles;
         game.save();
     })
+    Candidate.find({}).then(candidates => {
+        candidates.forEach(candidate => {
+            Player.findOne({number: candidate.number}).then(player => {
+                player.onVoting = false;
+                player.save();
+            })
+        })
+    })
     Candidate.deleteMany({}).then(() => {
         res.send({ candidates: null, votingCircles: votingCircles })
     })
