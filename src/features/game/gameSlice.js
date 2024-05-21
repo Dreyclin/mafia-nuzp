@@ -45,9 +45,10 @@ export const setRole = createAsyncThunk(
 
 export const resetGame = createAsyncThunk(
     'players/reset',
-    async () => {
+    async (data, {dispatch}) => {
         try {
             const response = await axios.post("http://localhost:5000/reset")
+            dispatch(loadGame());
             return response.data
         } catch (error) {
             console.log(error)
@@ -207,6 +208,7 @@ export const checkActiveRoles = createAsyncThunk(
     async(data, {dispatch}) => {
         try {
             const response = await axios.post("http://localhost:5000/checkActiveRoles", {data})
+            dispatch(loadGame());
             return response.data;
         } catch (error) {
             console.log(error)
@@ -234,7 +236,8 @@ const initialState = {
     candidates: candidates,
     gameOver: false,
     winnerTeam: null,
-    votingCircles: 0
+    votingCircles: 0,
+    disableRolesButtons: false
 }
 
 const gameSlice = createSlice({
@@ -283,10 +286,11 @@ const gameSlice = createSlice({
                 state.candidates = action.payload;
             })
             .addCase(loadGame.fulfilled, (state, action) => {
-                const {gameOver, winnerTeam} = action.payload;
+                const {gameOver, winnerTeam, votingCircles, disableRolesButtons} = action.payload;
 
                 state.winnerTeam = winnerTeam;
                 state.gameOver = gameOver;
+                state.disableRolesButtons = disableRolesButtons;
             })
             .addCase(checkGameOver.fulfilled, (state, action) => {
                 const {gameOver, winnerTeam} = action.payload;

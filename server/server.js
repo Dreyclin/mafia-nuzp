@@ -15,7 +15,8 @@ const gameSchema = mongoose.Schema({
     winnerTeam: String,
     gameOver: Boolean,
     roles: [Object],
-    votingCircles: Number
+    votingCircles: Number,
+    disableRolesButtons: Boolean
 })
 
 const playerSchema = mongoose.Schema({
@@ -178,6 +179,7 @@ app.post("/reset", function (req, res) {
                 game.winnerTeam = null;
                 game.gameOver = false;
                 game.votingCircles = 0;
+                game.disableRolesButtons = false;
                 game.save().then(() => {
                     Candidate.findOne({}).then(candidate => {
                         res.send({ players: players.sort((a, b) => a.number - b.number), candidates: candidate, votingCircles: game.votingCircles });
@@ -253,7 +255,7 @@ app.post("/kick", function (req, res) {
                             player.save()
                         }
                     })
-                    res.send({players: players.sort((a, b) => a.number - b.number), checkOver: true});
+                    res.send({ players: players.sort((a, b) => a.number - b.number), checkOver: true });
                 })
             }
             else {
@@ -264,11 +266,11 @@ app.post("/kick", function (req, res) {
                             player.save();
                         }
                     })
-                    res.send({players: players.sort((a, b) => a.number - b.number), checkOver: true});
+                    res.send({ players: players.sort((a, b) => a.number - b.number), checkOver: true });
                 })
             }
         } else {
-            res.send({players: players.sort((a, b) => a.number - b.number), checkOver: false});
+            res.send({ players: players.sort((a, b) => a.number - b.number), checkOver: false });
         }
     })
 })
@@ -431,7 +433,8 @@ app.post("/loadGame", function (req, res) {
                 winnerTeam: null,
                 gameOver: false,
                 playersInGame: 10,
-                votingCircles: 0
+                votingCircles: 0,
+                disableRolesButtons: false
             })
             newGame.save().then(() => {
                 res.send(newGame);
@@ -550,6 +553,7 @@ app.post("/checkActiveRoles", function (req, res) {
     let don = false;
     let sheriff = false;
     let mafia = false;
+    let notFullRoles = true;
 
     Player.findOne({ role: "Д" }).then(player => {
         if (player) {
@@ -568,7 +572,13 @@ app.post("/checkActiveRoles", function (req, res) {
                                             player.save()
                                         }
                                     })
-                                    res.send(players.sort((a, b) => a.number - b.number));
+                                    Game.findOne({}).then(game => {
+                                        console.log(game);
+                                        game.disableRolesButtons = true;
+                                        game.save().then(() => {
+                                            res.send(players.sort((a, b) => a.number - b.number))
+                                        })
+                                    })
                                 } else {
                                     res.send(players.sort((a, b) => a.number - b.number))
                                 }
@@ -578,7 +588,7 @@ app.post("/checkActiveRoles", function (req, res) {
                 }
             })
         }
-    })    
+    })
 })
 
 app.listen(5000, function () {

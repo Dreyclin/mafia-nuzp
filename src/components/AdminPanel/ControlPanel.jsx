@@ -7,7 +7,8 @@ export default function ControlPanel() {
     
     const dispatch = useDispatch();
     const players = useSelector(state => state.gameReducer.players);
-
+    const disableRolesButton = useSelector(state => state.gameReducer.disableRolesButtons);
+    console.log(disableRolesButton);
     const chosenIndex = players.findIndex(player => player.chosen === true);
 
     function handleSwitchClick(dir) {
@@ -17,10 +18,10 @@ export default function ControlPanel() {
 
     return(
         <div className="control-panel">
-        <button className="btn btn-dark" onClick={() => dispatch(setRole({player: players[chosenIndex], role: "Д", dispatch}))}>Сделать доном</button>
-        <button className="btn btn-secondary" onClick={() => dispatch(setRole({player: players[chosenIndex], role: "М", dispatch}))}>Сделать мафией</button>
-        <button className="btn btn-warning" onClick={() => dispatch(setRole({player: players[chosenIndex], role: "Ш", dispatch}))}>Сделать шерифом</button>
-        <button className="btn btn-danger" onClick={() => dispatch(setRole({player: players[chosenIndex], role: "К", dispatch}))}>Сделать мирным</button>
+        <button className="btn btn-dark" {...disableRolesButton && {disabled: true}} onClick={() => dispatch(setRole({player: players[chosenIndex], role: "Д", dispatch}))}>Сделать доном</button>
+        <button className="btn btn-secondary" {...disableRolesButton && {disabled: true}} onClick={() => dispatch(setRole({player: players[chosenIndex], role: "М", dispatch}))}>Сделать мафией</button>
+        <button className="btn btn-warning" {...disableRolesButton && {disabled: true}} onClick={() => dispatch(setRole({player: players[chosenIndex], role: "Ш", dispatch}))}>Сделать шерифом</button>
+        <button className="btn btn-danger" {...disableRolesButton && {disabled: true}} onClick={() => dispatch(setRole({player: players[chosenIndex], role: "К", dispatch}))}>Сделать мирным</button>
         <button className="btn btn-light" onClick={() => dispatch(setFoul(players[chosenIndex]))}>Поставить фол</button>
         <button className="btn btn-primary" onClick={() => dispatch(setOnVoting())}>Выставить на голосование</button>
         <button className="btn btn-danger" onClick={() => dispatch(kickPlayer())}>Изгнать</button>
