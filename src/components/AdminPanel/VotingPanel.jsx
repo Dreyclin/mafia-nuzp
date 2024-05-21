@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { countingVotes, sliceKicking } from "../../features/game/gameSlice";
+import { countingVotes, resetVoting, sliceKicking } from "../../features/game/gameSlice";
 
 export default function VotingPanel(props) {
     const dispatch = useDispatch();
@@ -71,6 +71,7 @@ export default function VotingPanel(props) {
                     );
                 })}
             </div>
+            <button className="btn btn-lg btn-dark" onClick={() => dispatch(resetVoting())}>Reset Voting</button>
         </div>
     );
 }
