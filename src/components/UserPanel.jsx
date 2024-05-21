@@ -35,7 +35,7 @@ export default function UserPanel() {
     return (
         <div className="user-panel">
             <div className="container">
-                <h1>Mafia NUZP</h1>
+                <h1>Mafia NU "Zaporizhzhia Polytechnic"</h1>
                 <div className="players-container">
                     {players.map(player => {
                         return <Player key={player.number} number={player.number} fouls={player.fouls} chosen={player.chosen} status={player.status} />

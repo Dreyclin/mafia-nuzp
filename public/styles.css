@@ -8,6 +8,7 @@ body {
 
 .user-panel h1 {
     font-size: 4rem;
+    font-weight: 900;
 }
 
 .players-container {
@@ -26,6 +27,7 @@ body {
     height: 250px;
     background-color: gray;
     margin: 0 0 20px 0;
+    border-radius: 10px;
 }
 
 .player-icon-container {
@@ -76,8 +78,16 @@ body {
     align-items: center;
     justify-content: center;
     font-weight: 900;
-    color: blueviolet;
+    color: #fff;
     font-size: 1.3rem;
+}
+
+.player-fouls-container .foul:first-child {
+    border-bottom-left-radius: 10px;
+}
+
+.player-fouls-container .foul:last-child {
+    border-bottom-right-radius: 10px;
 }
 
 .player-fouls-container .foul:not(:last-child) {
