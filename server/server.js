@@ -69,15 +69,19 @@ app.post("/load", function (req, res) {
 })
 
 app.post("/setFoul", function (req, res) {
+    let lastFoul = false;
     Player.findOne({ number: req.body.data.number }).then(player => {
         if (player.status !== "kicked") {
             const index = player.fouls.findIndex((foul) => foul === null);
             player.fouls[index] = "F";
+            if(index === 3){
+                lastFoul = true;
+            }
             player.save().then(() => {
-                res.send(player);
+                res.send({player: player, lastFoul: lastFoul});
             });
         } else {
-            res.send(player);
+            res.send({player: player});
         }
 
     })

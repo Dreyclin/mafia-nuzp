@@ -16,9 +16,12 @@ export const updatePlayersData = createAsyncThunk(
 
 export const setFoul = createAsyncThunk(
     'players/setFoul',
-    async (data) => {
+    async (data, {dispatch}) => {
         try {
             const response = await axios.post("http://localhost:5000/setFoul", { data })
+            if(response.data.lastFoul){
+                dispatch(kickPlayer(response.data.player.number))
+            }
             return response.data
         } catch (error) {
             console.log(error)
@@ -244,7 +247,7 @@ const gameSlice = createSlice({
             })
             .addCase(setFoul.fulfilled, (state, action) => {
                 const chosenIndex = state.players.findIndex((player) => player.chosen === true);
-                state.players[chosenIndex] = action.payload
+                state.players[chosenIndex] = action.payload.player
             })
             .addCase(setRole.fulfilled, (state, action) => {
                 const chosenIndex = state.players.findIndex((player) => player.chosen === true);
