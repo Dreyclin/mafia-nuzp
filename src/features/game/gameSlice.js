@@ -84,7 +84,9 @@ export const kickPlayer = createAsyncThunk(
     async (data, {dispatch}) => {
         try {
             const response = await axios.post("http://localhost:5000/kick", { data })
-            dispatch(checkGameOver());
+            if(response.data.checkOver === true){
+                dispatch(checkGameOver());
+            }
             return response.data
         } catch (error) {
             console.log(error)
@@ -272,7 +274,7 @@ const gameSlice = createSlice({
                 // const chosenIndex = state.players.findIndex((player) => player.chosen === true);
                 // state.players[chosenIndex] = action.payload
 
-                state.players = action.payload;
+                state.players = action.payload.players;
             })
             .addCase(setOnVoting.fulfilled, (state, action) => {
                 state.candidates = action.payload;

@@ -74,14 +74,14 @@ app.post("/setFoul", function (req, res) {
         if (player.status !== "kicked") {
             const index = player.fouls.findIndex((foul) => foul === null);
             player.fouls[index] = "F";
-            if(index === 3){
+            if (index === 3) {
                 lastFoul = true;
             }
             player.save().then(() => {
-                res.send({player: player, lastFoul: lastFoul});
+                res.send({ player: player, lastFoul: lastFoul });
             });
         } else {
-            res.send({player: player});
+            res.send({ player: player });
         }
 
     })
@@ -235,28 +235,42 @@ app.post("/switch", function (req, res) {
 })
 
 app.post("/kick", function (req, res) {
-    if (!req.body.data) {
-        Player.find({}).then(players => {
-            players.forEach(player => {
-                if (player.chosen === true) {
-                    player.status = "kicked";
-                    player.save()
-                }
-            })
-            res.send(players.sort((a, b) => a.number - b.number));
+    let notFullRoles = false;
+
+    Player.find({}).then(players => {
+        players.forEach(player => {
+            if (player.role === null) {
+                notFullRoles = true;
+                console.log(notFullRoles);
+            }
         })
-    }
-    else {
-        Player.find({}).then(players => {
-            players.forEach(player => {
-                if (player.number === req.body.data) {
-                    player.status = "kicked";
-                    player.save();
-                }
-            })
-            res.send(players.sort((a, b) => a.number - b.number));
-        })
-    }
+        if (!notFullRoles) {
+            if (!req.body.data) {
+                Player.find({}).then(players => {
+                    players.forEach(player => {
+                        if (player.chosen === true) {
+                            player.status = "kicked";
+                            player.save()
+                        }
+                    })
+                    res.send({players: players.sort((a, b) => a.number - b.number), checkOver: true});
+                })
+            }
+            else {
+                Player.find({}).then(players => {
+                    players.forEach(player => {
+                        if (player.number === req.body.data) {
+                            player.status = "kicked";
+                            player.save();
+                        }
+                    })
+                    res.send({players: players.sort((a, b) => a.number - b.number), checkOver: true});
+                })
+            }
+        } else {
+            res.send({players: players.sort((a, b) => a.number - b.number), checkOver: false});
+        }
+    })
 })
 
 app.post("/loadTimer", function (req, res) {
@@ -478,7 +492,7 @@ app.post("/resetVoting", function (req, res) {
     })
     Candidate.find({}).then(candidates => {
         candidates.forEach(candidate => {
-            Player.findOne({number: candidate.number}).then(player => {
+            Player.findOne({ number: candidate.number }).then(player => {
                 player.onVoting = false;
                 player.save();
             })
@@ -533,24 +547,23 @@ app.post("/sliceKick", async function (req, res) {
 })
 
 app.post("/checkActiveRoles", function (req, res) {
-    // try {
     let don = false;
     let sheriff = false;
     let mafia = false;
 
-    Player.findOne({role: "Д"}).then(player => {
-        if(player){
+    Player.findOne({ role: "Д" }).then(player => {
+        if (player) {
             don = true;
-            Player.findOne({role: "Ш"}).then(player => {
-                if(player){
+            Player.findOne({ role: "Ш" }).then(player => {
+                if (player) {
                     sheriff = true;
-                    Player.find({role: "М"}).then(players => {
-                        if(players.length === 2){
+                    Player.find({ role: "М" }).then(players => {
+                        if (players.length === 2) {
                             mafia = true;
                             Player.find({}).then(players => {
-                                if(don && mafia && sheriff){
+                                if (don && mafia && sheriff) {
                                     players.forEach(player => {
-                                        if(player.role === null){
+                                        if (player.role === null) {
                                             player.role = "К"
                                             player.save()
                                         }
@@ -565,40 +578,7 @@ app.post("/checkActiveRoles", function (req, res) {
                 }
             })
         }
-    })
-
-
-
-
-    //     const donPlayer = await Player.findOne({ role: "Д" });
-    //     if (donPlayer) {
-    //         don = true;
-    //     }
-
-    //     const sheriffPlayer = await Player.findOne({ role: "Ш" });
-    //     if (sheriffPlayer) {
-    //         sheriff = true;
-    //     }
-
-    //     const mafiaPlayers = await Player.find({ role: "М" });
-    //     if (mafiaPlayers.length === 2) {
-    //         mafia = true;
-    //     }
-
-    //     console.log(don, sheriff, mafia);
-
-    //     if (don && sheriff && mafia) {
-    //         console.log("FINALLY!!!!!!");
-    //         const players = await Player.find({});
-    //         res.send(players.sort((a, b) => a.number - b.number));
-    //     } else {
-    //         const players = await Player.find({});
-    //         res.send(players.sort((a, b) => a.number - b.number));
-    //     }
-    // } catch (error) {
-    //     console.error("Error occurred:", error);
-    //     res.status(500).send("Internal server error");
-    // }
+    })    
 })
 
 app.listen(5000, function () {
