@@ -34,7 +34,7 @@ export default function UserPanel() {
 
     return (
         <div className="user-panel">
-            <div className="container">
+            <div className="user-container">
                 <h1>Mafia NU "Zaporizhzhia Polytechnic"</h1>
                 <div className="players-container">
                     {players.map(player => {
