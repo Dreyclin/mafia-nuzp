@@ -497,9 +497,9 @@ app.post("/resetVoting", function (req, res) {
                 player.save();
             })
         })
-    })
-    Candidate.deleteMany({}).then(() => {
-        res.send({ candidates: null, votingCircles: votingCircles })
+        Candidate.deleteMany({}).then(() => {
+            res.send({ candidates: null, votingCircles: votingCircles })
+        })
     })
 })
 
